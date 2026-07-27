@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floor Plan Viewer</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Segoe UI, Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f6f9;
+      overflow: hidden;
+    }
+
+    header {
+      background: #222;
+      color: #fff;
+      padding: 18px 30px;
+    }
+
+    header h1 {
+      margin-bottom: 10px;
+    }
+
+    #legend {
+      display: flex;
+      gap: 20px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+
+
+    .unit {
+      fill: transparent;
+      stroke: transparent;
+      cursor: pointer;
+      pointer-events: all;
+      transition: .2s;
+    }
+
+    .unit:hover {
+      fill: rgba(37, 99, 235, .35);
+    }
+
+    /* Tooltip */
+
+    #tooltip {
+      position: fixed;
+      display: none;
+      background: #222;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Overlay */
+
+    .overlay {
+
+      position: fixed;
+      inset: 0;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      background: rgba(0, 0, 0, .65);
+
+      z-index: 999;
+
+    }
+
+    .card {
+
+      width: 420px;
+
+      background: white;
+
+      border-radius: 12px;
+
+      padding: 30px;
+
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+
+    }
+
+    .card h2 {
+
+      margin-bottom: 20px;
+
+    }
+
+    input {
+
+      width: 100%;
+
+      margin-bottom: 15px;
+
+      padding: 12px;
+
+      border-radius: 8px;
+
+      border: 1px solid #ccc;
+
+    }
+
+    button {
+
+      width: 100%;
+
+      padding: 14px;
+
+      background: #2563eb;
+
+      color: white;
+
+      border: none;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+      font-size: 16px;
+
+    }
+
+    button:hover {
+
+      background: #1d4ed8;
+
+    }
+
+    #waitingScreen,
+    #verifyScreen,
+    #expiredScreen {
+
+      display: none;
+
+    }
+
+    .message {
+
+      text-align: center;
+
+      line-height: 1.8;
+
+    }
+
+    #timer {
+
+      display: none;
+
+      position: fixed;
+
+      top: 20px;
+
+      right: 20px;
+
+      background: #ef4444;
+
+      color: white;
+
+      padding: 10px 18px;
+
+      border-radius: 8px;
+
+      font-weight: bold;
+
+      z-index: 50;
+
+    }
+
+
+
+    #floorWrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    #floorImage {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .Cutout {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .Cutout svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Interactive Floor Plan</h1>
+
+    <div id="legend"></div>
+
+  </header>
+
+  <div id="timer">
+    00:00
+  </div>
+
+  <!-- FLOOR -->
+
+  <div id="floorWrapper">
+
+    <img id="floorImage" src="images/floorplan.png" alt="Floor Plan">
+
+    <div class="Cutout">
+
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 1445.38 485.58">
+
+
+        <path id="Anchor_Store" class="unit" d="M0 112.81v372.77h533.9V161.67H287.22v-35.23H172.31v-13.63z"
+          class="st0" />
+
+        <path id="Retail_x5F_Area_x5F_4" class="unit"
+          d="M1128.74 0v77.51h22.25v44.82h55.75v34.75h70.08v282.75h168.56V110.25h-38.67V0z" class="st0" />
+
+        <path id="Retail_x5F_Area_x5F_3" class="unit" d="M1157.26 175.76v264.07h115.95V160.64h-84.99v14.95z"
+          class="st0" />
+
+        <path id="Retail_x5F_Area_x5F_2" class="unit" d="M1037.11 439.91H1153v-279.1h-80.77v14.7h-35.12z" class="st0" />
+
+        <path id="Retail_x5F_Area_x5F_1" class="unit" d="M1032.87 439.91H895.1V199.6h106.45v-23.95h31.32z"
+          class="st0" />
+
+
+      </svg> -->
+      <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 2383.92 1143.36">
+        <defs>
+          <style>
+            .st0 {
+              fill: #fff
+            }
+          </style>
+        </defs>
+        <path id="Anchor_Store" class="unit" d="M332.31 481.02v372.77h533.9V529.88H619.53v-35.23H504.62v-13.63z"
+          class="st0" />
+        <path id="Retail_x5F_Area_x5F_4" class="unit"
+          d="M1461.05 368.21v77.51h22.25v44.82h55.75v34.75h70.08v282.75h168.56V478.46h-38.67V368.21z" class="st0" />
+        <path id="Retail_x5F_Area_x5F_3" class="unit" d="M1489.57 543.97v264.07h115.95V528.85h-84.99v14.95z"
+          class="st0" />
+        <path id="Retail_x5F_Area_x5F_2" class="unit" d="M1369.42 808.12h115.89v-279.1h-80.77v14.7h-35.12z"
+          class="st0" />
+        <path id="Retail_x5F_Area_x5F_1" class="unit" d="M1365.18 808.12h-137.77V567.81h106.45v-23.95h31.32z"
+          class="st0" />
+      </svg>
+    </div>
+
+  </div>
+
+  <div id="tooltip"></div>
+
+  <!-- POPUP -->
+
+  <div id="popup" class="overlay">
+
+    <div class="card">
+
+      <h2>Visitor Registration</h2>
+
+      <form id="visitorForm">
+
+        <input id="name" type="text" placeholder="Full Name" required>
+
+        <input id="phone" type="text" placeholder="Phone Number" required>
+
+        <input id="email" type="email" placeholder="Email Address" required>
+
+        <button type="submit">
+
+          Request Access
+
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- WAITING -->
+
+  <div id="waitingScreen" class="overlay">
+
+    <div class="card message">
+
+      <h2>Waiting For Approval</h2>
+
+      <p>
+
+        Your request has been sent.
+
+      </p>
+
+      <br>
+
+      <p>
+
+        Please wait while the administrator approves your access.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- VERIFY -->
+
+  <div id="verifyScreen" class="overlay">
+
+    <div class="card">
+
+      <h2>Verify Your Identity</h2>
+
+      <p style="margin-bottom:15px">
+
+        Enter the same phone number you used during registration.
+
+      </p>
+
+      <input id="verifyPhone" type="text" placeholder="Phone Number">
+
+      <button id="verifyBtn">
+
+        Verify
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- EXPIRED -->
+
+  <div id="expiredScreen" class="overlay">
+
+    <div class="card message">
+
+      <h2>Session Expired</h2>
+
+      <p>
+
+        Your access time has ended.
+
+      </p>
+
+      <br>
+
+      <p>
+
+        Please contact the administrator if you need access again.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <script type="module" src="js/database.js"></script>
+  <script type="module" src="js/property.js"></script>
+  <script type="module" src="js/visitor.js"></script>
+
+</body>
+
+</html>
