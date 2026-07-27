@@ -1,5 +1,4 @@
-const API = "http://localhost:5000/api";
-
+const API = "https://admin-check-2.onrender.com/api";
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const error = document.getElementById("error");
