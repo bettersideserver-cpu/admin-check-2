@@ -7,12 +7,13 @@ import {
     getProperties,
     getCategories,
     checkExpiredVisitors,
-    initializeDatabase
+    initializeDatabase,
+    listenProperties
 } from "./database.js";
 
 import {
     updateFloorColors
-} from "./property.js";
+} from "./floorColor.js";
 
 // ==========================
 // Elements
@@ -376,9 +377,10 @@ async function colorSVG() {
 
 })();
 
-setInterval(async () => {
+listenProperties(async (data) => {
 
-    properties = await getProperties();
+    properties = data;
+
     await updateFloorColors();
 
-}, 200);
+});

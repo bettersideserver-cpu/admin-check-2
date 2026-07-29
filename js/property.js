@@ -4,14 +4,77 @@ import {
     getCategories,
     syncProperties
 } from "./database.js";
+import floors from "./floor.js";
 
-const units = [...document.querySelectorAll("#floorplan .unit")];
-const propertyIds = units.map(unit => unit.id);
+async function getAllPropertyIds() {
+    const allIds = [];
 
-await syncProperties(propertyIds);
+    for (const floor of floors) {
+        try {
+            const response = await fetch(floor.file);
+
+            if (!response.ok) {
+                console.error("Cannot load:", floor.file);
+                continue;
+            }
+
+            const html = await response.text();
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            const units = doc.querySelectorAll("svg .unit");
+
+            units.forEach(unit => {
+
+                const id = unit.id.trim();
+
+                if (!id) {
+                    console.error("❌ Empty ID found in:", floor.file, unit);
+                    return;
+                }
+
+                allIds.push(id);
+
+            });
+
+            console.log(`${floor.name}: ${units.length} units`);
+
+        } catch (err) {
+            console.error(`Failed to load ${floor.file}`, err);
+        }
+    }
+
+    return allIds;
+}
+
+
+const propertyIds = await getAllPropertyIds();
+
+try {
+    await syncProperties(propertyIds);
+} catch (err) {
+    console.error("SYNC ERROR:", err);
+    console.error(err.stack);
+}
 
 // console.log(units);
 const table = document.getElementById("propertyTable");
+let selectedFloor = "All";
+let searchText = "";
+const searchInput = document.getElementById("propertySearch");
+
+if (searchInput) {
+
+    searchInput.addEventListener("input", () => {
+
+        searchText = searchInput.value.toLowerCase();
+
+        loadProperties();
+
+    });
+
+}
 
 // ------------------------------
 
@@ -22,14 +85,105 @@ export async function loadProperties() {
     table.innerHTML = "";
 
     const properties = await getProperties();
+    const categories = await getCategories();
+
+    const floorTabs = document.getElementById("floorTabs");
+
+    if (floorTabs) {
+
+        const floors = [...new Set(
+            Object.keys(properties).map(id => parseProperty(id).floor)
+        )];
+
+        console.log("Properties:", Object.keys(properties));
+        console.log("Parsed Floors:", floors);
+
+        floors.sort((a, b) => {
+
+            if (a === "LG") return -1;
+            if (b === "LG") return 1;
+
+            if (a === "G") return -1;
+            if (b === "G") return 1;
+
+            return Number(a) - Number(b);
+
+        });
+
+        floorTabs.innerHTML = "";
+
+        floorTabs.innerHTML +=
+            `<button class="floor ${selectedFloor === "All" ? "active" : ""}" data-floor="All">
+            All
+        </button>`;
+
+        floors.forEach(floor => {
+
+            floorTabs.innerHTML +=
+                `<button
+            class="floor ${selectedFloor === floor ? "active" : ""}"
+            data-floor="${floor}">
+            ${floor == "LG" || floor == "G" ? floor : "F" + floor}
+        </button>`;
+
+        });
+
+        floorTabs.querySelectorAll(".floor").forEach(btn => {
+
+            btn.onclick = () => {
+
+                selectedFloor = btn.dataset.floor;
+
+                loadProperties();
+
+            };
+
+        });
+
+    }
+
+    let total = 0;
+    let available = 0;
+    let reserved = 0;
+    let sold = 0;
 
     for (const [id, status] of Object.entries(properties)) {
+
+        const property = parseProperty(id);
+        // Floor Filter
+        if (
+            selectedFloor !== "All" &&
+            property.floor !== selectedFloor
+        ) {
+            continue;
+        }
+
+        // Search Filter
+        if (
+            searchText &&
+            !property.name.toLowerCase().includes(searchText)
+        ) {
+            continue;
+        }
+
+        total++;
+
+        if (status === "Available") available++;
+        if (status === "Reserved") reserved++;
+        if (status === "Sold") sold++;
 
         const row = document.createElement("tr");
 
         row.innerHTML = `
 
-        <td>${formatName(id)}</td>
+        <td>${property.floor === "LG" || property.floor === "G"
+                ? property.floor
+                : "F" + property.floor
+            }</td>
+
+        <td>${property.unit}</td>
+
+        <td>${property.name}</td>
 
         <td>
 
@@ -37,11 +191,9 @@ export async function loadProperties() {
 
         </td>
 
-    `;
+        `;
 
         const select = row.querySelector("select");
-
-        const categories = await getCategories();
 
         Object.keys(categories).forEach(category => {
 
@@ -51,9 +203,8 @@ export async function loadProperties() {
 
             option.textContent = category;
 
-            if (category === status) {
+            if (category === status)
                 option.selected = true;
-            }
 
             select.appendChild(option);
 
@@ -63,24 +214,58 @@ export async function loadProperties() {
 
             await updateProperty(id, select.value);
 
+            loadProperties();
+
         };
 
         table.appendChild(row);
 
     }
 
+    document.getElementById("floorTotal").textContent = total;
+    document.getElementById("floorAvailable").textContent = available;
+    document.getElementById("floorReserved").textContent = reserved;
+    document.getElementById("floorSold").textContent = sold;
+
 }
-function formatName(id) {
+function parseProperty(id) {
 
-    return id
-        .replace(/_x5F_/g, " ")
-        .replace(/_/g, " ");
+    // Decode SVG encoded numbers
+    let clean = id
+        .replace(/_x31_0/g, "10")
+        .replace(/_x31_1/g, "11")
+        .replace(/_x31_2/g, "12")
+        .replace(/_x31_3/g, "13")
+        .replace(/_x31_4/g, "14")
+        .replace(/_x31_5/g, "15")
+        .replace(/_x31_6/g, "16")
+        .replace(/_x31_7/g, "17")
+        .replace(/_x31_8/g, "18")
+        .replace(/_x39_/g, "9")
+        .replace(/_x38_/g, "8")
+        .replace(/_x37_/g, "7")
+        .replace(/_x36_/g, "6")
+        .replace(/_x35_/g, "5")
+        .replace(/_x34_/g, "4")
+        .replace(/_x33_/g, "3")
+        .replace(/_x32_/g, "2")
+        .replace(/_x31_/g, "1")
+        .replace(/_x5F_/g, "_");
 
+    const parts = clean.split("_");
+
+    return {
+        id,
+        floor: parts[0],
+        unit: parts.at(-1),
+        name: parts.slice(1, -1).join(" ")
+    };
 }
 
 export async function updateFloorColors() {
 
     const properties = await getProperties();
+    console.log(properties);
 
     document.querySelectorAll(".unit").forEach(unit => {
 

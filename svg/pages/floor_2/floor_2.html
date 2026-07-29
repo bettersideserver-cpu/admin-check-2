@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Floor 2</title>
+<link rel="stylesheet" href="../styles.css">
+
+</head>
+
+<body>
+    <style>
+        /* =====================================
+   RESET
+===================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #111;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .unit {
+            fill: transparent;
+            stroke: transparent;
+            cursor: pointer;
+            pointer-events: all;
+            transition: .2s;
+        }
+
+        .unit:hover {
+            fill: rgba(37, 99, 235, .35);
+        }
+
+
+
+        /* =====================================
+   CONTAINER
+===================================== */
+
+        .floor-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* =====================================
+   FLOOR IMAGE
+===================================== */
+
+        #floorImage {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* =====================================
+   SVG
+===================================== */
+
+        #floorSVG {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            z-index: 10;
+        }
+
+        /* =====================================
+   CLICKABLE AREAS
+===================================== */
+
+        #floorSVG path {
+
+            fill: rgba(255, 255, 255, 0.001);
+
+            stroke: transparent;
+
+            stroke-width: 3;
+
+            cursor: pointer;
+
+            transition:
+                fill .25s ease,
+                stroke .25s ease,
+                filter .25s ease,
+                transform .25s ease;
+
+        }
+
+        /* =====================================
+   HOVER
+===================================== */
+
+        #floorSVG path:hover {
+
+            fill: rgba(255, 215, 0, .35);
+
+            stroke: #FFD700;
+
+            filter:
+                drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 20px #FFD700);
+
+        }
+
+        /* =====================================
+   CLICK
+===================================== */
+
+        #floorSVG path:active {
+
+            fill: rgba(255, 215, 0, .6);
+
+        }
+
+        /* =====================================
+   OPTIONAL BACK BUTTON
+===================================== */
+
+        .back-btn {
+
+            position: absolute;
+
+            top: 30px;
+            left: 30px;
+
+            padding: 12px 24px;
+
+            background: white;
+
+            color: black;
+
+            text-decoration: none;
+
+            border-radius: 10px;
+
+            z-index: 100;
+
+            font-weight: 600;
+
+        }
+
+
+
+
+
+
+        header {
+            background: #222;
+            color: #fff;
+            padding: 18px 30px;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        #legend {
+            display: flex;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+
+
+        #tooltip {
+            position: fixed;
+            display: none;
+            background: #222;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+
+
+        #timer {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 9999;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, .65);
+            z-index: 9999;
+        }
+
+        .card {
+            width: 420px;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+        }
+
+        #waitingScreen,
+        #verifyScreen,
+        #expiredScreen {
+            display: none;
+        }
+    </style>
+
+    <header>
+        <h1>Interactive Floor Plan</h1>
+        <div id="legend"></div>
+    </header>
+
+    
+    <div id="timer">
+        00:00
+    </div>
+    <div id="tooltip"></div>
+
+
+    <div class="floor-container">
+
+        <!-- Floor Plan Image -->
+        <img src="Floor-02.png" id="floorImage" alt="Floor Plan">
+
+        <!-- SVG Overlay -->
+        <svg id="floorSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4967 2341"
+            preserveAspectRatio="xMidYMid meet">
+
+            <path id="2_Anchor_Store" class="unit"
+                d="M1682.44 749.67V544.33h-996v1209.56H1295v-763.5h-217.11V738.72h256.72v13h77.78V739.5h163.78v-13.11h25.33v23.11z" />
+
+            <path id="2_MiniTheater" class="unit" d="M1958.5 720.28v348.44h473.78V720.28z" />
+
+            <path id="2_Admin_Area" class="unit" d="M1907.72 543.94v222.34h50.78v-46h473.78V543.94z" />
+
+            <path id="2_Restaurent" class="unit"
+                d="M3717.33 1652.11v111.11H2426.78l-8.67-8.66v-97.12h35.56v-5.33h219.77v5.33h14.78v-505.83l217.34 1V995.06h186.66v-100h-48.66V729.61h-394.95V550.44h1055.22v1096.41z" />
+
+            <path id="2_Cabin" class="unit" d="M1813.67 1078H1295v671.44h314v-327.38h-136.28v-83.23h340.95z"
+                class="st0" />
+            <path id="2_Reception_Area" d="M1692.67 1422.61v323.33h725.44v-238H1920v-85.33z" />
+        </svg>
+
+    </div>
+
+
+
+
+    <script type="module" src="../../../js/database.js"></script>
+
+    <script type="module" src="../../../js/visitor.js"></script>
+
+
+</body>
+
+</html>

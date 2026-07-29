@@ -377,6 +377,109 @@
             }
 
         }
+
+        .searchBox {
+
+            width: 280px;
+            padding: 12px 16px;
+
+            border-radius: 10px;
+
+            border: 1px solid #dcdcdc;
+
+            font-size: 15px;
+
+        }
+
+        .floorTabs {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin: 20px 0;
+
+        }
+
+        .floor {
+
+            padding: 10px 18px;
+
+            border: none;
+
+            background: #eef2ff;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            transition: .25s;
+
+        }
+
+        .floor:hover {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+        .floor.active {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+        .floorStats {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .stat {
+
+            background: white;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+
+        }
+
+        .stat span {
+
+            color: #777;
+
+            font-size: 14px;
+
+        }
+
+        .stat h3 {
+
+            margin-top: 8px;
+
+            font-size: 28px;
+
+            color: #2563eb;
+
+        }
     </style>
 
 </head>
@@ -485,13 +588,51 @@
 
         </section>
 
-        <!-- Property Management -->
+
+
+        <!-- Categories -->
 
         <section class="section">
 
             <div class="section-header">
 
                 <h2>Property Management</h2>
+
+                <input type="text" id="propertySearch" placeholder="Search property..." class="searchBox">
+
+            </div>
+
+            <div id="floorTabs" class="floorTabs">
+
+                <button class="floor active" data-floor="All">All</button>
+
+                <button class="floor" data-floor="LG">LG</button>
+
+                <button class="floor" data-floor="G">G</button>
+
+            </div>
+
+            <div id="floorStats" class="floorStats">
+
+                <div class="stat">
+                    <span>Total</span>
+                    <h3 id="floorTotal">0</h3>
+                </div>
+
+                <div class="stat">
+                    <span>Available</span>
+                    <h3 id="floorAvailable">0</h3>
+                </div>
+
+                <div class="stat">
+                    <span>Reserved</span>
+                    <h3 id="floorReserved">0</h3>
+                </div>
+
+                <div class="stat">
+                    <span>Sold</span>
+                    <h3 id="floorSold">0</h3>
+                </div>
 
             </div>
 
@@ -501,9 +642,15 @@
 
                     <tr>
 
+                        <th>Floor</th>
+
+                        <th>Unit</th>
+
                         <th>Property</th>
 
                         <th>Status</th>
+
+                        <th>Action</th>
 
                     </tr>
 
@@ -517,146 +664,26 @@
 
         </section>
 
-        <!-- Categories -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <h2>Categories</h2>
-
-            </div>
-
-            <table class="propertyTable">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Name</th>
-
-                        <th>Color</th>
-
-                        <th>Action</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="categoryTable">
-
-                    <tr>
-
-                        <td>
-
-                            Available
-
-                        </td>
-
-                        <td>
-
-                            <input type="color" value="#22c55e">
-
-                        </td>
-
-                        <td>
-
-                            <button>
-
-                                Save
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            Sold
-
-                        </td>
-
-                        <td>
-
-                            <input type="color" value="#ef4444">
-
-                        </td>
-
-                        <td>
-
-                            <button>
-
-                                Save
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            Reserved
-
-                        </td>
-
-                        <td>
-
-                            <input type="color" value="#f59e0b">
-
-                        </td>
-
-                        <td>
-
-                            <button>
-
-                                Save
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-            <br>
-
-            <button id="addCategory">
-
-                + Add Category
-
-            </button>
-
-        </section>
-
     </main>
 
-<script>
-const token = localStorage.getItem("token");
+    <script>
+        const token = localStorage.getItem("token");
 
-if (!token) {
-    window.location.replace("login.html");
-}
-</script>
+        if (!token) {
+            window.location.replace("login.html");
+        }
+    </script>
     <script type="module" src="js/admin.js"></script>
-<script>
-document.querySelector(".logout").addEventListener("click", () => {
+    <script>
+        document.querySelector(".logout").addEventListener("click", () => {
 
-localStorage.removeItem("token");
-localStorage.removeItem("admin");
+            localStorage.removeItem("token");
+            localStorage.removeItem("admin");
 
-window.location.href = "login.html";
+            window.location.href = "login.html";
 
-});
-</script>
+        });
+    </script>
 </body>
 
 </html>

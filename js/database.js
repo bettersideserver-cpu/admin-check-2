@@ -290,19 +290,19 @@ export async function getProperties() {
 
 export async function updateProperty(id, status) {
 
+    console.log("Updating:", id, status);
+
     await setDoc(
-
         doc(db, PROPERTY_COLLECTION, id),
-
         {
             status
         },
-
         {
             merge: true
         }
-
     );
+
+    console.log("Updated successfully");
 
 }
 
@@ -401,5 +401,28 @@ export async function syncProperties(propertyIds) {
         }
 
     }
+
+}
+
+// =======================================
+// Realtime Properties
+// =======================================
+
+export function listenProperties(callback) {
+
+    return onSnapshot(
+        collection(db, PROPERTY_COLLECTION),
+        (snapshot) => {
+
+            const properties = {};
+
+            snapshot.forEach((document) => {
+                properties[document.id] = document.data().status;
+            });
+
+            callback(properties);
+
+        }
+    );
 
 }

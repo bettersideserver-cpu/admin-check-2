@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Floor 11</title>
+
+    
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <style>
+        /* =====================================
+   RESET
+===================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #111;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+   .unit {
+      fill: transparent;
+      stroke: transparent;
+      cursor: pointer;
+      pointer-events: all;
+      transition: .2s;
+    }
+
+    .unit:hover {
+      fill: rgba(37, 99, 235, .35);
+    }
+
+
+
+        /* =====================================
+   CONTAINER
+===================================== */
+
+        .floor-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* =====================================
+   FLOOR IMAGE
+===================================== */
+
+        #floorImage {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* =====================================
+   SVG
+===================================== */
+
+        #floorSVG {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            z-index: 10;
+        }
+
+        /* =====================================
+   CLICKABLE AREAS
+===================================== */
+
+        #floorSVG path {
+
+            fill: rgba(255, 255, 255, 0.001);
+
+            stroke: transparent;
+
+            stroke-width: 3;
+
+            cursor: pointer;
+
+            transition:
+                fill .25s ease,
+                stroke .25s ease,
+                filter .25s ease,
+                transform .25s ease;
+
+        }
+
+        /* =====================================
+   HOVER
+===================================== */
+
+        #floorSVG path:hover {
+
+            fill: rgba(255, 215, 0, .35);
+
+            stroke: #FFD700;
+
+            filter:
+                drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 20px #FFD700);
+
+        }
+
+        /* =====================================
+   CLICK
+===================================== */
+
+        #floorSVG path:active {
+
+            fill: rgba(255, 215, 0, .6);
+
+        }
+
+        /* =====================================
+   OPTIONAL BACK BUTTON
+===================================== */
+
+        .back-btn {
+
+            position: absolute;
+
+            top: 30px;
+            left: 30px;
+
+            padding: 12px 24px;
+
+            background: white;
+
+            color: black;
+
+            text-decoration: none;
+
+            border-radius: 10px;
+
+            z-index: 100;
+
+            font-weight: 600;
+
+        }
+    </style>
+    
+   <header>
+        <h1>Interactive Floor Plan</h1>
+        <div id="legend"></div>
+    </header>
+    <div id="timer">
+        00:00
+    </div>
+    <div id="tooltip"></div>
+    <div class="floor-container">
+
+        <!-- Floor Plan Image -->
+        <img src="Floor-11.png" id="floorImage" alt="Floor Plan">
+
+        <!-- SVG Overlay -->
+        <svg id="floorSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4967 2341"
+            preserveAspectRatio="xMidYMid meet">
+            <path id="11_PresidentialOffice_1" class="unit"
+                d="M2359.33,1225.73v234h684v-316h-560.39v80l-123.61,2Z" />
+            <path id="11_PresidentialOffice_2" class="unit" d="M3043.33,1143.73h652.67v316h-652.67v-316Z" />
+            <path id="11_PresidentialOffice_3" class="unit"
+                d="M3043.33,881.06s-2,172.67,0,172.67h95.33v90h557.33v-262.67h-652.67,0Z" />
+            <path id="11_PresidentialOffice_4" class="unit"
+                d="M896.66,881.06v579.33h316v-459.33h79.33v-120s-394.33-1-395.33,0" />
+            <path id="11_PresidentialOffice_5" class="unit" d="M1212.66,1191.06h640v269.33h-640v-269.33Z" />
+
+
+
+
+        </svg>
+
+    </div>
+
+     
+
+
+    <script type="module" src="../../../js/database.js"></script>
+  
+  <script type="module" src="../../../js/visitor.js"></script>
+
+
+</body>
+
+</html>

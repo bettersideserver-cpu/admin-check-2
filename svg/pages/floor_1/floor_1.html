@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Floor 1</title>
+    <link rel="stylesheet" href="../styles.css">
+  
+
+</head>
+
+<body>
+<style>
+    /* =====================================
+   RESET
+===================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#111;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+/* =====================================
+   CONTAINER
+===================================== */
+
+.floor-container{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* =====================================
+   FLOOR IMAGE
+===================================== */
+
+#floorImage{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    user-select:none;
+    pointer-events:none;
+}
+   .unit {
+      fill: transparent;
+      stroke: transparent;
+      cursor: pointer;
+      pointer-events: all;
+      transition: .2s;
+    }
+
+    .unit:hover {
+      fill: rgba(37, 99, 235, .35);
+    }
+
+
+
+/* =====================================
+   SVG
+===================================== */
+
+#floorSVG{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:10;
+}
+
+/* =====================================
+   CLICKABLE AREAS
+===================================== */
+
+#floorSVG path{
+
+    fill:rgba(255,255,255,0.001);
+
+    stroke:transparent;
+
+    stroke-width:3;
+
+    cursor:pointer;
+
+    transition:
+        fill .25s ease,
+        stroke .25s ease,
+        filter .25s ease,
+        transform .25s ease;
+
+}
+
+/* =====================================
+   HOVER
+===================================== */
+
+#floorSVG path:hover{
+
+    fill:rgba(255,215,0,.35);
+
+    stroke:#FFD700;
+
+    filter:
+        drop-shadow(0 0 8px #FFD700)
+        drop-shadow(0 0 20px #FFD700);
+
+}
+
+/* =====================================
+   CLICK
+===================================== */
+
+#floorSVG path:active{
+
+    fill:rgba(255,215,0,.6);
+
+}
+
+/* =====================================
+   OPTIONAL BACK BUTTON
+===================================== */
+
+.back-btn{
+
+    position:absolute;
+
+    top:30px;
+    left:30px;
+
+    padding:12px 24px;
+
+    background:white;
+
+    color:black;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    z-index:100;
+
+    font-weight:600;
+
+}
+</style>
+
+
+   <header>
+        <h1>Interactive Floor Plan</h1>
+        <div id="legend"></div>
+    </header>
+    <div id="timer">
+        00:00
+    </div>
+    <div id="tooltip"></div>
+<div class="floor-container">
+
+    <!-- Floor Plan Image -->
+    <img
+        src="Floor-01.png"
+        id="floorImage"
+        alt="Floor Plan">
+
+    <!-- SVG Overlay -->
+    <svg
+        id="floorSVG"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 4967 2341"
+        preserveAspectRatio="xMidYMid meet">
+
+        <path id="1_AnchorStore_1"   class="unit"
+            d="M1902.11 725.44V581.89h-1210v1166h1116.67v-680h-518.67v-70.67h-238V724.56z"/>
+
+        <path id="1_Retail_Area_1"    class="unit"
+            d="M2552.78 1139.22v512.67h304.67v-553.33h-70.67v-38h-148v76.67s-87 1-86 2Z"/>
+
+        <path id="1_Retail_Area_2"    class="unit"
+            d="M2857.44 1098.56v553.33h402.67v-573.33h-204.67v-18h-130v37.33z"/>
+
+        <path id="1_Retail_Area_3"    class="unit"
+            d="M3252.78 1651.89v96.67h449.33V551.89h-1276v170.67h619.33v170h46.67v103.33h-36.33l-.34 64.67v18h204.67v573.33z"/>
+
+    </svg>
+
+</div>
+
+ 
+
+
+    <script type="module" src="../../../js/database.js"></script>
+  
+  <script type="module" src="../../../js/visitor.js"></script>
+
+
+</body>
+</html>
