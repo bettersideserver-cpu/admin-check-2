@@ -50,12 +50,14 @@ const legend = document.getElementById("legend");
 let timerInterval;
 let pollInterval = null;
 
-await updateFloorColors();
 let properties = await getProperties();
+
+updateFloorColors(properties);
+let categories = await getCategories();
 
 document.querySelectorAll(".unit").forEach(unit => {
 
-    unit.addEventListener("mousemove", (e) => {
+    unit.addEventListener("mousemove", async (e) => {
 
         tooltip.style.display = "block";
 
@@ -63,12 +65,30 @@ document.querySelectorAll(".unit").forEach(unit => {
         tooltip.style.top = e.pageY + 15 + "px";
 
         const status = properties[unit.id] || "Unknown";
+        const info = window.unitDetails?.[unit.id];
+
+        const categories = await getCategories();
+        const statusColor = categories[status] || "#999";
 
         tooltip.innerHTML = `
-            <strong>${unit.id.replace(/_x5F_/g, " ").replace(/_/g, " ")}</strong>
-            <br>
-            Status : ${status}
-        `;
+    <strong>${unit.id.replace(/_x5F_/g, " ").replace(/_/g, " ")}</strong>
+
+    ${info ? `
+        <br>
+        Super Area : ${info.superArea}
+        <br>
+        Carpet Area : ${info.carpetArea}
+    ` : ""}
+
+    <br>
+Status :
+<span style="
+    color:${statusColor};
+    font-weight:700;
+">
+    ${status}
+</span>
+`;
     });
 
     unit.addEventListener("mouseleave", () => {
@@ -458,9 +478,21 @@ async function colorSVG() {
 
             tooltip.style.top = e.clientY + 15 + "px";
 
-            tooltip.innerHTML =
+            const info = window.unitDetails?.[id];
 
-                `<b>${id}</b><br>${status}`;
+            tooltip.innerHTML = `
+    <strong>${id.replace(/_x5F_/g, " ").replace(/_/g, " ")}</strong>
+
+    ${info ? `
+        <br>
+        Super Area : ${info.superArea}
+        <br>
+        Carpet Area : ${info.carpetArea}
+    ` : ""}
+
+    <br>
+    Status : ${status}
+`;
 
         };
 
@@ -692,10 +724,10 @@ async function guardFloorPage() {
 
 })();
 
-listenProperties(async (data) => {
+listenProperties((data) => {
 
     properties = data;
 
-    await updateFloorColors();
+    updateFloorColors(properties);
 
 });

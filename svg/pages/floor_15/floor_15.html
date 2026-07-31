@@ -8,8 +8,8 @@
 
     <title>Floor 15</title>
 
-    
-<link rel="stylesheet" href="../styles.css">
+
+    <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
@@ -163,8 +163,8 @@
 
         }
     </style>
-    
-   <header>
+
+    <header>
         <h1>Interactive Floor Plan</h1>
         <div id="legend"></div>
     </header>
@@ -180,17 +180,27 @@
         <!-- SVG Overlay -->
         <svg id="floorSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4967 2341"
             preserveAspectRatio="xMidYMid meet">
-            <path id="15_PresidentialOffice" class="unit"
+            <path id="15_PresidentialOffice_1501" class="unit"
                 d="M3619.83,1028v321h-1257v-185h-397v191h-947v-336h193v158h656v-86h502v-65h45v24h19v142h536v-78h76v-89l574,3Z" />
         </svg>
 
     </div>
+    <script>
+        window.unitDetails = {
 
-     
+            "15_PresidentialOffice_1501": {
+                unit: "Presidential Office",
+                superArea: "7,126 sq.ft",
+                carpetArea: "3,563 sq.ft"
+            }
+
+        };
+    </script>
+
 
 
     <script type="module" src="../../../js/database.js"></script>
-    
+
     <script type="module" src="../../../js/visitor.js"></script>
 
 

@@ -161,8 +161,8 @@
             fill: rgba(37, 99, 235, .35);
         }
     </style>
-    
-   <header>
+
+    <header>
         <h1>Interactive Floor Plan</h1>
         <div id="legend"></div>
     </header>
@@ -178,17 +178,27 @@
         <!-- SVG Overlay -->
         <svg id="floorSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4967 2341"
             preserveAspectRatio="xMidYMid meet">
-            <path id="16_PresidentialOffice" class="unit"
+            <path id="16_PresidentialOffice_1601" class="unit"
                 d="M3618.54,1024.52v324.37h-1257.6v-187.9h-394.7v193.15h-944.77v-329.62h186.85v151.16h658.19v-89.23h503.88v-61.93h45.14v27.29h16.8v137.52h536.42v-75.58h77.68v-89.23h572.11Z" />
         </svg>
 
     </div>
 
-     
+    <script>
+        window.unitDetails = {
+
+            "16_PresidentialOffice_1601": {
+                unit: "Presidential Office 1601",
+                superArea: "7,126 sq.ft",
+                carpetArea: "3,563 sq.ft"
+            }
+
+        };
+    </script>
 
 
     <script type="module" src="../../../js/database.js"></script>
-    
+
     <script type="module" src="../../../js/visitor.js"></script>
 
 

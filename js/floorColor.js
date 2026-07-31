@@ -1,8 +1,11 @@
-import { getProperties } from "./database.js";
+// import { getProperties } from "./database.js";
 
-export async function updateFloorColors() {
+// export async function updateFloorColors() {
 
-    const properties = await getProperties();
+//     const properties = await getProperties();
+
+//     Object.entries(properties).forEach(([id, status]) => {
+export function updateFloorColors(properties) {
 
     Object.entries(properties).forEach(([id, status]) => {
 
