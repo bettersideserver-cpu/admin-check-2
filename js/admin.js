@@ -73,15 +73,15 @@ async function loadVisitors() {
 
 <p><strong>Email:</strong> ${visitor.email}</p>
 
+<p><strong>City:</strong> ${visitor.city || "-"}</p>
+
 <p><strong>Status:</strong> ${visitor.status}</p>
 
 <select>
 
-    <option value="5">5 Minutes</option>
-    <option value="10">10 Minutes</option>
-    <option value="15">15 Minutes</option>
-    <option value="30">30 Minutes</option>
-    <option value="60">1 Hour</option>
+    <option value="1">1 Hour</option>
+    <option value="6">6 Hours</option>
+    <option value="24">24 Hours</option>
 
 </select>
 
@@ -108,7 +108,9 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
 
             await approveVisitor(
                 visitor.id,
-                Number(select.value)
+                // Dropdown values are hours (1 / 6 / 24),
+                // but approveVisitor expects minutes.
+                Number(select.value) * 60
             );
 
             await refresh();

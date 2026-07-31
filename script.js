@@ -1,4 +1,4 @@
-// =============================
+
 // SVG Path Links
 // =============================
 
@@ -30,6 +30,52 @@ const floorLinks = {
 };
 
 // =============================
+// Floor Names + Tooltip (desktop hover)
+// Dummy category tags below — replace with
+// real floor names whenever they're ready.
+// =============================
+
+const floorNames = {
+    floor1: "Floor 1 — Retail / Anchor",
+    floor2: "Floor 2 — Retail / Anchor",
+    floor3: "Floor 3 — Club",
+    floor4: "Floor 4 — Club",
+    floor5: "Floor 5 — Presidential Offices",
+    floor6: "Floor 6 — Boutique Offices",
+    floor7: "Floor 7 — Boutique Offices",
+    floor8: "Floor 8 — Boutique Offices",
+    floor9: "Floor 9 — Boutique Offices",
+    floor10: "Floor 10 — Boutique Offices",
+    floor11: "Floor 11 — Boutique Offices",
+    floor12: "Floor 12 — Boutique Offices",
+    floor13: "Floor 13 — Penthouse Offices",
+    floor14: "Floor 14 — Penthouse Offices",
+    floor15: "Floor 15 — Penthouse Offices",
+    floor16: "Floor 16 — Presidential Offices",
+    floor17: "Floor 17 — Presidential Offices",
+    floor18: "Floor 18",
+};
+
+const floorTooltip = document.getElementById("tooltip");
+
+// =============================
+// Mobile Category Panels
+// Each panel reveals only its own floors on the
+// building SVG (mobile only, see CSS). Tapping a
+// revealed floor still uses the same click handler
+// below to navigate.
+// =============================
+
+const categoryGroups = {
+    retail: ["floor1", "floor2"],
+    club: ["floor3", "floor4"],
+    presidential: ["floor5", "floor16", "floor17"],
+    boutique: ["floor6", "floor7", "floor8", "floor9", "floor10", "floor11", "floor12"],
+    penthouse: ["floor13", "floor14", "floor15"],
+    // floor18 intentionally not included in any panel.
+};
+
+// =============================
 // Attach Click Events
 // =============================
 
@@ -43,7 +89,20 @@ Object.keys(floorLinks).forEach(id => {
     }
 
     path.addEventListener("click", () => {
-        window.location.href = floorLinks[id];
+
+        // Show the visitor registration form first.
+        // Only after the visitor is approved & verified
+        // does it redirect to the clicked floor page.
+        if (typeof window.requestFloorAccess === "function") {
+
+            window.requestFloorAccess(floorLinks[id]);
+
+        } else {
+
+            window.location.href = floorLinks[id];
+
+        }
+
     });
 
     path.addEventListener("mouseenter", () => {
@@ -57,4 +116,74 @@ Object.keys(floorLinks).forEach(id => {
         path.style.stroke = "transparent";
     });
 
+    // Desktop hover tooltip (harmless on mobile too,
+    // it just never fires since paths aren't hovered there).
+    if (floorTooltip) {
+
+        path.addEventListener("mousemove", (e) => {
+
+            floorTooltip.style.display = "block";
+            floorTooltip.style.left = e.pageX + 15 + "px";
+            floorTooltip.style.top = e.pageY + 15 + "px";
+            floorTooltip.innerHTML = `<strong>${floorNames[id] || id}</strong>`;
+
+        });
+
+        path.addEventListener("mouseleave", () => {
+            floorTooltip.style.display = "none";
+        });
+
+    }
+
 });
+
+// =============================
+// Mobile Category Panel Buttons
+// =============================
+
+(function () {
+
+    const panelButtons = document.querySelectorAll(".category-btn");
+
+    if (!panelButtons.length) return;
+
+    function clearActivePanel() {
+
+        document.querySelectorAll("#buildingSVG path.panel-active").forEach(p => {
+            p.classList.remove("panel-active");
+        });
+
+        panelButtons.forEach(b => b.classList.remove("active"));
+
+    }
+
+    panelButtons.forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+            const key = btn.dataset.panel;
+            const isAlreadyActive = btn.classList.contains("active");
+
+            clearActivePanel();
+
+            // Tapping the already-active panel again just
+            // closes it back to the default (nothing shown).
+            if (isAlreadyActive) return;
+
+            const floors = categoryGroups[key] || [];
+
+            floors.forEach(floorId => {
+
+                const path = document.getElementById(floorId);
+
+                if (path) path.classList.add("panel-active");
+
+            });
+
+            btn.classList.add("active");
+
+        });
+
+    });
+
+})();

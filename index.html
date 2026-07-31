@@ -14,17 +14,24 @@
       font-family: Segoe UI, Arial, sans-serif;
     }
 
+    html,
     body {
+      height: 100%;
       background: #f4f6f9;
       overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
     }
 
     #buildingSVG {
       position: absolute;
       inset: 0;
 
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
 
       z-index: 10;
     }
@@ -76,6 +83,25 @@
 
     }
 
+    #reraBadge {
+      position: fixed;
+      top: 70px;
+      left: 20px;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      backdrop-filter: blur(4px);
+    }
+
+    #reraBadge .rera-label {
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
     /* ===========================
    RESPONSIVE
 =========================== */
@@ -93,6 +119,7 @@
     }
 
     header {
+      flex: 0 0 auto;
       background: #222;
       color: #fff;
       padding: 18px 30px;
@@ -142,7 +169,77 @@
       padding: 10px 14px;
       border-radius: 8px;
       pointer-events: none;
-      z-index: 10;
+      z-index: 9999;
+    }
+
+    /* ===========================
+   MOBILE CATEGORY PANELS
+   (bottom bar, mobile only)
+=========================== */
+
+    #categoryPanels {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+
+      #categoryPanels {
+        display: flex;
+        position: fixed;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        z-index: 41;
+        width: calc(100vw - 16px);
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        padding: 0;
+      }
+
+      .category-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        white-space: normal;
+        line-height: 1.15;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(168, 120, 42, 0.3);
+        border-radius: 14px;
+        color: #222;
+        font-size: 9.5px;
+        font-weight: 600;
+        padding: 8px 3px;
+        cursor: pointer;
+        transition: background .2s ease, color .2s ease, border-color .2s ease;
+      }
+
+      .category-btn.active {
+        background: #FFD700;
+        border-color: #FFD700;
+        color: #222;
+      }
+
+      /* Default: floor shapes are non-interactive on
+         mobile until a category panel is tapped. */
+      #buildingSVG path {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #buildingSVG path.panel-active {
+        opacity: 1;
+        pointer-events: auto;
+        fill: rgba(255, 215, 0, .35);
+        stroke: #FFD700;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 8px #FFD700);
+      }
+
+      #buildingSVG path.panel-active:active {
+        fill: rgba(255, 215, 0, .6);
+      }
     }
 
     /* Overlay */
@@ -246,9 +343,9 @@
 
       position: fixed;
 
-      top: 20px;
+      top: 60px;
 
-      right: 20px;
+      right: 180px;
 
       background: #ef4444;
 
@@ -268,13 +365,85 @@
 
     #floorWrapper {
       position: relative;
-      display: inline-block;
+      display: block;
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
     }
 
     #floorImage {
+      position: absolute;
+      inset: 0;
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ===========================
+   TIME-OF-DAY CROSSFADE LAYERS
+=========================== */
+
+    .timeLayer {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      will-change: opacity;
+      background: #000;
+    }
+
+    #layerMorning {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    #layerEvening {
+      opacity: 0;
+      z-index: 2;
+    }
+
+    #layerNight {
+      opacity: 0;
+      z-index: 3;
+    }
+
+    /* ===========================
+   TIME SLIDER CONTROL (matches reference .day-slider-wrap)
+=========================== */
+
+    #timeSliderWrap {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      z-index: 40;
+      width: min(500px, 80%);
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 120, 42, 0.2);
+      border-radius: 100px;
+      padding: 8px 18px;
+    }
+
+    #timeSlider {
+      width: 100%;
+      cursor: pointer;
+      accent-color: #FFD700;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      #timeSliderWrap {
+        bottom: 82px;
+        width: min(280px, calc(100vw - 80px));
+        padding: 5px 14px;
+      }
     }
 
     .Cutout {
@@ -289,6 +458,85 @@
       width: 100%;
       height: 100%;
     }
+     #logoIntro {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #d8d7d7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .6s ease, visibility .6s ease;
+  }
+
+  #logoIntro.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #logoIntroImg {
+    width: 240px;
+    max-width: 60vw;
+    opacity: 0;
+    transform: scale(.85);
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, .35));
+    animation: logoPop 1.4s cubic-bezier(.2, .8, .2, 1) forwards;
+  }
+
+  @keyframes logoPop {
+    0% {
+      opacity: 0;
+      transform: scale(.8);
+      filter: drop-shadow(0 0 0 rgba(255, 215, 0, 0));
+    }
+
+    55% {
+      opacity: 1;
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 30px rgba(255, 215, 0, .55));
+    }
+
+    75% {
+      transform: scale(.98);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: drop-shadow(0 0 18px rgba(255, 215, 0, .35));
+    }
+  }
+
+  @media (max-width: 768px) {
+    #logoIntroImg {
+      width: 170px;
+    }
+  }
+    #siteLogo {
+    
+    position: fixed;
+    top: 50px;
+    right: 30px;
+    width: 100px;
+    z-index: 9998;
+    pointer-events: none;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.45);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+  
+
+  }
+
+  @media (max-width: 768px) {
+    #siteLogo {
+      top: 12px;
+      right: 12px;
+      width: 60px;
+    }
+  }
   </style>
  
 
@@ -298,11 +546,20 @@
 
   <header>
 
-    <h1>Interactive Floor Plan</h1>
+  
 
     <div id="legend"></div>
 
   </header>
+
+  <img id="siteLogo" src="images/logo.png" alt="Apple's Height Logo">
+<div id="logoIntro">
+  <img id="logoIntroImg" src="images/AH-logo.png" alt="Apple's Height">
+</div>
+  <div id="reraBadge">
+    <div class="rera-label">RERA NUMBER</div>
+    <div>PBRERA-LDH45-PC0350</div>
+  </div>
 
   <div id="timer">
     00:00
@@ -312,7 +569,13 @@
 
   <div id="floorWrapper">
 
-    <img id="floorImage" src="images/building.png" alt="Floor Plan">
+    <img id="layerMorning" class="timeLayer" src="images/building-morning.jpg" alt="Floor Plan - Morning">
+    <img id="layerEvening" class="timeLayer" src="images/building-evening.jpg" alt="Floor Plan - Evening">
+    <img id="layerNight" class="timeLayer" src="images/building-night.jpg" alt="Floor Plan - Night">
+
+    <div id="timeSliderWrap">
+      <input type="range" id="timeSlider" min="0" max="100" value="0" step="1" aria-label="Time of Day">
+    </div>
 
     <div class="Cutout">
 
@@ -394,6 +657,15 @@
 
   <div id="tooltip"></div>
 
+  <!-- MOBILE CATEGORY PANELS -->
+  <div id="categoryPanels">
+    <button type="button" class="category-btn" data-panel="retail">Retail / Anchor</button>
+    <button type="button" class="category-btn" data-panel="club">Club</button>
+    <button type="button" class="category-btn" data-panel="presidential">Presidential Offices</button>
+    <button type="button" class="category-btn" data-panel="boutique">Boutique Offices</button>
+    <button type="button" class="category-btn" data-panel="penthouse">Penthouse Offices</button>
+  </div>
+
   <!-- POPUP -->
 
   <div id="popup" class="overlay">
@@ -406,9 +678,11 @@
 
         <input id="name" type="text" placeholder="Full Name" required>
 
-        <input id="phone" type="text" placeholder="Phone Number" required>
+        <input type="tel" id="phone" maxlength="10" pattern="[0-9]{10}" placeholder="Phone Number" inputmode="numeric" required>
 
         <input id="email" type="email" placeholder="Email Address" required>
+
+        <input type="text" id="city" placeholder="Enter City" required>
 
         <button type="submit">
 
@@ -500,11 +774,66 @@
 
   </div>
 
+  <script>
+    (function () {
+      var slider = document.getElementById('timeSlider');
+      var morning = document.getElementById('layerMorning');
+      var evening = document.getElementById('layerEvening');
+      var night = document.getElementById('layerNight');
+
+      if (!slider || !morning || !evening || !night) return;
+
+      // Morning is the base (always underneath, always fully opaque),
+      // Evening and Night overlay on top and dissolve in. This avoids any
+      // page-background bleed-through that a fading base layer would cause.
+      morning.style.opacity = 1;
+
+      function updateTimeOfDay(value) {
+        var v = Math.max(0, Math.min(100, Number(value)));
+
+        if (v <= 50) {
+          var t = v / 50;
+          evening.style.opacity = t;
+          night.style.opacity = 0;
+        } else {
+          var t = (v - 50) / 50;
+          evening.style.opacity = 1;
+          night.style.opacity = t;
+        }
+      }
+
+      slider.addEventListener('input', function (e) {
+        updateTimeOfDay(e.target.value);
+      });
+
+      updateTimeOfDay(slider.value);
+    })();
+  </script>
+  <script>
+  (function () {
+    var intro = document.getElementById('logoIntro');
+    if (!intro) return;
+
+    // Total time logo stays on screen before fading out (ms)
+    var HOLD_TIME = 2200;
+
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        intro.classList.add('hide');
+        // remove from DOM after the fade-out transition finishes
+        setTimeout(function () {
+          intro.remove();
+        }, 700);
+      }, HOLD_TIME);
+    });
+  })();
+</script>
+
   <script type="module" src="js/database.js"></script>
   <script type="module" src="js/property.js"></script>
   <script type="module" src="js/visitor.js"></script>
+  <script type="module" src="js/floor.js"></script>
   <script src="script.js"></script>
-  <script src="js/floor.js"></script>
 </body>
 
 </html>

@@ -102,7 +102,7 @@ export async function initializeDatabase() {
 // Visitor
 // =======================================
 
-export async function addVisitor(name, phone, email) {
+export async function addVisitor(name, phone, email, city) {
 
     const visitor = {
 
@@ -113,6 +113,8 @@ export async function addVisitor(name, phone, email) {
         phone,
 
         email,
+
+        city: city || "",
 
         status: "Pending",
 
