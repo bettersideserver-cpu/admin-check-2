@@ -13,6 +13,8 @@
 </head>
 
 <body>
+    <img id="floorImage" src="" alt="Floor">
+    <script src="../../../js/floorLoader.js"></script>
     <style>
         /* =====================================
    RESET
@@ -203,7 +205,7 @@
     <script>
         window.unitDetails = {
 
-            "_x31_0_x5F_BoutiqueOffice_1001": {
+            "10_BoutiqueOffice_1001": {
                 unit: "Boutique Office 1001",
                 superArea: "1,054 sq.ft",
                 carpetArea: "527 sq.ft"
@@ -266,7 +268,17 @@
         };
     </script>
 
+   <div id="popupContainer"></div>
 
+    <script>
+        fetch("../hold.html")
+            .then(r => r.text())
+            .then(html => {
+
+                document.getElementById("popupContainer").innerHTML = html;
+
+            });
+    </script>
 
     <script type="module" src="../../../js/database.js"></script>
 

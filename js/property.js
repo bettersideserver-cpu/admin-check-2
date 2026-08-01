@@ -6,6 +6,11 @@ import {
 } from "./database.js";
 import floors from "./floor.js";
 
+let draftChanges = {};
+
+
+const propertyDetails = {};
+
 async function getAllPropertyIds() {
     const allIds = [];
 
@@ -20,6 +25,20 @@ async function getAllPropertyIds() {
 
             const html = await response.text();
 
+            // Read window.unitDetails from the floor HTML
+            const match = html.match(/window\.unitDetails\s*=\s*({[\s\S]*?});/);
+
+            if (match) {
+                try {
+                    const details = Function("return " + match[1])();
+
+                    Object.assign(propertyDetails, details);
+
+                } catch (e) {
+                    console.error("Couldn't read unitDetails from", floor.file, e);
+                }
+            }
+
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
 
@@ -28,6 +47,7 @@ async function getAllPropertyIds() {
             units.forEach(unit => {
 
                 const id = unit.id.trim();
+
 
                 if (!id) {
                     console.error("❌ Empty ID found in:", floor.file, unit);
@@ -50,6 +70,7 @@ async function getAllPropertyIds() {
 
 
 const propertyIds = await getAllPropertyIds();
+// console.log(propertyDetails);
 
 try {
     await syncProperties(propertyIds);
@@ -60,7 +81,7 @@ try {
 
 // console.log(units);
 const table = document.getElementById("propertyTable");
-let selectedFloor = "All";
+let selectedFloor = "1";
 let searchText = "";
 const searchInput = document.getElementById("propertySearch");
 
@@ -109,13 +130,11 @@ export async function loadProperties() {
             return Number(a) - Number(b);
 
         });
-
+        if (!selectedFloor && floors.length > 0) {
+            selectedFloor = floors[0];
+        }
         floorTabs.innerHTML = "";
 
-        floorTabs.innerHTML +=
-            `<button class="floor ${selectedFloor === "All" ? "active" : ""}" data-floor="All">
-            All
-        </button>`;
 
         floors.forEach(floor => {
 
@@ -147,12 +166,15 @@ export async function loadProperties() {
     let reserved = 0;
     let sold = 0;
 
-    for (const [id, status] of Object.entries(properties)) {
+    for (const [id, propertyData] of Object.entries(properties)) {
+        const status = propertyData.status || "Available";
+        const buyerName = propertyData.buyerName || "";
+        const buyerPhone = propertyData.buyerPhone || "";
 
         const property = parseProperty(id);
         // Floor Filter
         if (
-            selectedFloor !== "All" &&
+            selectedFloor &&
             property.floor !== selectedFloor
         ) {
             continue;
@@ -172,28 +194,91 @@ export async function loadProperties() {
         if (status === "Reserved") reserved++;
         if (status === "Sold") sold++;
 
+
+        const detail = propertyDetails[id] || {};
         const row = document.createElement("tr");
 
         row.innerHTML = `
 
-        <td>${property.floor === "LG" || property.floor === "G"
+<td>${property.floor === "LG" || property.floor === "G"
                 ? property.floor
-                : "F" + property.floor
-            }</td>
+                : "F" + property.floor}</td>
 
-        <td>${property.unit}</td>
+<td>${property.name}</td>
 
-        <td>${property.name}</td>
+<td>${property.unit}</td>
 
-        <td>
+<td class="area">
 
-            <select data-id="${id}"></select>
+    <div><strong>SA:</strong> ${detail.superArea || "-"}</div>
 
-        </td>
+    <div><strong>CA:</strong> ${detail.carpetArea || "-"}</div>
 
-        `;
+</td>
+
+<!-- Status Column -->
+<td>
+    <select data-id="${id}"></select>
+</td>
+
+<!-- Buyer Information Column -->
+<td>
+
+<div class="buyer-card">
+
+    <div class="buyer-fields">
+
+        <div class="field">
+
+            <label>Buyer Name</label>
+
+            <input
+                class="buyerName"
+                placeholder="Enter buyer name"
+                value="${buyerName}">
+
+        </div>
+
+        <div class="field">
+
+            <label>Phone Number</label>
+
+            <input
+                class="buyerPhone"
+                placeholder="Enter phone number"
+                value="${buyerPhone}">
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</td>
+
+`;
 
         const select = row.querySelector("select");
+        const buyerNameInput = row.querySelector(".buyerName");
+        const buyerPhoneInput = row.querySelector(".buyerPhone");
+        // saveBuyer.onclick = async () => {
+
+        //     await updateProperty(
+
+        //         id,
+
+        //         select.value,
+
+        //         buyerNameInput.value,
+
+        //         buyerPhoneInput.value
+
+        //     );
+
+        //     loadProperties();
+
+        // };
 
         Object.keys(categories).forEach(category => {
 
@@ -210,14 +295,43 @@ export async function loadProperties() {
 
         });
 
-        select.onchange = async () => {
+        // select.onchange = async () => {
 
-            await updateProperty(id, select.value);
+        //     await updateProperty(
 
-            loadProperties();
+        //         id,
 
-        };
+        //         select.value,
 
+        //         buyerNameInput.value,
+
+        //         buyerPhoneInput.value
+
+        //     );
+
+        //     loadProperties();
+
+        // };
+        function saveDraft() {
+
+            draftChanges[id] = {
+
+                status: select.value,
+                buyerName: buyerNameInput.value.trim(),
+                buyerPhone: buyerPhoneInput.value.trim()
+
+            };
+
+            if (saveBtn) saveBtn.disabled = false;
+            if (cancelBtn) cancelBtn.disabled = false;
+
+        }
+
+        select.onchange = saveDraft;
+
+        buyerNameInput.oninput = saveDraft;
+
+        buyerPhoneInput.oninput = saveDraft;
         table.appendChild(row);
 
     }
@@ -269,7 +383,7 @@ export async function updateFloorColors() {
 
     document.querySelectorAll(".unit").forEach(unit => {
 
-        const status = properties[unit.id];
+        const status = properties[unit.id]?.status;
 
         switch (status) {
 
@@ -302,4 +416,95 @@ export async function updateFloorColors() {
 
     });
 
+}
+
+// document.getElementById("saveChanges").onclick = async () => {
+
+//     for (const [id, data] of Object.entries(draftChanges)) {
+
+//         await updateProperty(
+
+//             id,
+
+//             data.status,
+
+//             data.buyerName,
+
+//             data.buyerPhone
+
+//         );
+
+//     }
+
+//     draftChanges = {};
+
+//     await loadProperties();
+
+// };
+const saveBtn = document.getElementById("saveChanges");
+
+if (saveBtn) {
+
+    saveBtn.onclick = async () => {
+
+        try {
+
+            for (const [id, data] of Object.entries(draftChanges)) {
+
+                await updateProperty(
+
+                    id,
+                    data.status,
+                    data.buyerName,
+                    data.buyerPhone
+
+                );
+
+            }
+
+            draftChanges = {};
+
+            await loadProperties();
+
+            saveBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+
+
+            alert("Changes saved successfully.");
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("Failed to save changes.");
+
+        }
+
+    };
+
+}
+
+const cancelBtn = document.getElementById("cancelChanges");
+
+if (cancelBtn) {
+
+    cancelBtn.onclick = async () => {
+
+        draftChanges = {};
+
+        await loadProperties();
+        saveBtn.disabled = true;
+        cancelBtn.disabled = true;
+
+    };
+
+}
+
+if (saveBtn) {
+    saveBtn.disabled = true;
+}
+
+if (cancelBtn) {
+    cancelBtn.disabled = true;
 }

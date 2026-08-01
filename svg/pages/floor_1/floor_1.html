@@ -13,6 +13,8 @@
 </head>
 
 <body>
+    <img id="floorImage" src="" alt="Floor">
+    <script src="../../../js/floorLoader.js"></script>
     <style>
         /* =====================================
    RESET
@@ -229,6 +231,18 @@
                 carpetArea: "4,685 sq.ft"
             }
         };
+    </script>
+
+    <div id="popupContainer"></div>
+
+    <script>
+        fetch("../hold.html")
+            .then(r => r.text())
+            .then(html => {
+
+                document.getElementById("popupContainer").innerHTML = html;
+
+            });
     </script>
 
     <script type="module" src="../../../js/database.js"></script>

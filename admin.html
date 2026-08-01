@@ -480,6 +480,197 @@
             color: #2563eb;
 
         }
+
+
+
+
+        /* ==========================================
+   Buyer Information
+========================================== */
+
+        .buyer-card {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            background: #fff;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 16px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
+
+        }
+
+        .buyer-fields {
+
+            display: flex;
+
+            gap: 18px;
+
+            flex: 1;
+
+        }
+
+        .field {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+        .field label {
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            color: #666;
+
+            margin-bottom: 6px;
+
+        }
+
+        .field input {
+
+            width: 100%;
+
+            height: 42px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            padding: 0 12px;
+
+            font-size: 14px;
+
+            outline: none;
+
+        }
+
+        .field input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+
+        }
+
+        .saveBuyer {
+
+            width: 110px;
+
+            height: 42px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #0f6b3c;
+
+            color: #fff;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+        .saveBuyer:hover {
+
+            background: #0b572f;
+
+        }
+
+        #propertyTable select {
+
+            width: 170px;
+
+            height: 42px;
+
+            border-radius: 8px;
+
+            border: 1px solid #d1d5db;
+
+            padding: 0 12px;
+
+        }
+
+        .area {
+
+            line-height: 1.8;
+
+        }
+
+        .area strong {
+
+            color: #111827;
+
+        }
+
+        .table-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 15px;
+
+            margin-top: 25px;
+
+        }
+
+        .save-btn {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 28px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+        }
+
+        .cancel-btn {
+
+            background: white;
+
+            border: 1px solid #d1d5db;
+
+            padding: 12px 28px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
     </style>
 
 </head>
@@ -494,15 +685,29 @@
 
         <ul>
 
-            <li class="active">Dashboard</li>
+            <li class="menu active" data-page="dashboardPage">
+                Dashboard
+            </li>
 
-            <li>Visitor Requests</li>
+            <li class="menu" data-page="visitorPage">
+                Visitor Requests
+            </li>
 
-            <li>Properties</li>
+            <li class="menu" data-page="propertyPage">
+                Properties
+            </li>
 
-            <li>Categories</li>
+            <li class="menu" data-page="propertyRequestPage">
+                Property Requests
+            </li>
 
-            <li>Settings</li>
+            <li class="menu">
+                Categories
+            </li>
+
+            <li class="menu">
+                Settings
+            </li>
 
         </ul>
 
@@ -534,45 +739,64 @@
 
         <!-- Cards -->
 
-        <section class="cards">
+        <div id="dashboardPage" class="page active">
 
-            <div class="card">
+            <section class="cards">
 
-                <h3>Pending</h3>
+                <div class="card">
 
-                <h2 id="pendingCount">0</h2>
+                    <h3>Pending</h3>
 
-            </div>
+                    <h2 id="pendingCount">0</h2>
 
-            <div class="card">
+                </div>
 
-                <h3>Approved</h3>
+                <div class="card">
 
-                <h2 id="approvedCount">0</h2>
+                    <h3>Approved</h3>
 
-            </div>
+                    <h2 id="approvedCount">0</h2>
 
-            <div class="card">
+                </div>
 
-                <h3>Expired</h3>
+                <div class="card">
 
-                <h2 id="expiredCount">0</h2>
+                    <h3>Expired</h3>
 
-            </div>
+                    <h2 id="expiredCount">0</h2>
 
-            <div class="card">
+                </div>
 
-                <h3>Inventory</h3>
+                <div class="card">
 
-                <h2 id="propertyCount">0</h2>
+                    <h3>Inventory</h3>
 
-            </div>
+                    <h2 id="propertyCount">0</h2>
 
-        </section>
+                </div>
 
-        <!-- Visitor Requests -->
+            </section>
 
-        <section class="section">
+            <!-- Visitor Requests -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <h2>Visitor Requests</h2>
+
+                </div>
+
+                <div id="requestContainer">
+
+                    <!-- admin.js loads cards here -->
+
+                </div>
+
+            </section>
+        </div>
+
+        <section id="visitorPage" class="section page">
 
             <div class="section-header">
 
@@ -580,19 +804,14 @@
 
             </div>
 
-            <div id="requestContainer">
-
-                <!-- admin.js loads cards here -->
+            <div id="visitorRequestPageContainer">
 
             </div>
 
         </section>
-
-
-
         <!-- Categories -->
 
-        <section class="section">
+        <section id="propertyPage" class="section page">
 
             <div class="section-header">
 
@@ -632,6 +851,7 @@
                 <div class="stat">
                     <span>Sold</span>
                     <h3 id="floorSold">0</h3>
+
                 </div>
 
             </div>
@@ -643,20 +863,62 @@
                     <tr>
 
                         <th>Floor</th>
-
-                        <th>Unit</th>
-
                         <th>Property</th>
-
+                        <th>Unit</th>
+                        <th>Area</th>
                         <th>Status</th>
-
-                        <th>Action</th>
+                        <th>Buyer Information</th>
 
                     </tr>
 
                 </thead>
 
                 <tbody id="propertyTable">
+
+                </tbody>
+
+            </table>
+            <div class="table-actions">
+
+                <button id="cancelChanges" class="cancel-btn">
+                    Cancel
+                </button>
+
+                <button id="saveChanges" class="save-btn">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </section>
+
+        <section id="propertyRequestPage" class="section page">
+
+            <div class="section-header">
+
+                <h2>Property Requests</h2>
+
+            </div>
+
+            <table class="propertyTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Visitor</th>
+                        <th>Phone</th>
+                        <th>Floor</th>
+                        <th>Property</th>
+                        <th>Unit</th>
+                        <th>Requested</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="propertyRequestTable">
 
                 </tbody>
 
@@ -672,6 +934,35 @@
         if (!token) {
             window.location.replace("login.html");
         }
+    </script>
+
+    <script>
+
+        const menus = document.querySelectorAll(".menu");
+        const pages = document.querySelectorAll(".page");
+
+        menus.forEach(menu => {
+
+            menu.onclick = () => {
+
+                menus.forEach(m => m.classList.remove("active"));
+
+                menu.classList.add("active");
+
+                pages.forEach(page => page.classList.remove("active"));
+
+                const page = document.getElementById(menu.dataset.page);
+
+                if (page) {
+
+                    page.classList.add("active");
+
+                }
+
+            }
+
+        });
+
     </script>
     <script type="module" src="js/admin.js"></script>
     <script>

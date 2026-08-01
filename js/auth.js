@@ -22,7 +22,7 @@ document.getElementById("showLogin").onclick = () => {
 
 // REGISTER
 
-document.getElementById("registerBtn").onclick = async () => {
+document.getElementById("registerBtn").addEventListener("click", async () => {
 
     const name = document.getElementById("registerName").value.trim();
     const email = document.getElementById("registerEmail").value.trim();
@@ -66,11 +66,11 @@ document.getElementById("registerBtn").onclick = async () => {
 
     }
 
-};
+});
 
 // LOGIN
 
-document.getElementById("loginBtn").onclick = async () => {
+document.getElementById("loginBtn").addEventListener("click", async () => {
 
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
@@ -112,4 +112,4 @@ document.getElementById("loginBtn").onclick = async () => {
 
     }
 
-};
+});

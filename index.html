@@ -458,87 +458,231 @@
       width: 100%;
       height: 100%;
     }
-     #logoIntro {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: #d8d7d7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity .6s ease, visibility .6s ease;
-  }
 
-  #logoIntro.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+    #logoIntro {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #d8d7d7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .6s ease, visibility .6s ease;
+    }
 
-  #logoIntroImg {
-    width: 240px;
-    max-width: 60vw;
-    opacity: 0;
-    transform: scale(.85);
-    filter: drop-shadow(0 0 25px rgba(255, 215, 0, .35));
-    animation: logoPop 1.4s cubic-bezier(.2, .8, .2, 1) forwards;
-  }
-
-  @keyframes logoPop {
-    0% {
+    #logoIntro.hide {
       opacity: 0;
-      transform: scale(.8);
-      filter: drop-shadow(0 0 0 rgba(255, 215, 0, 0));
+      visibility: hidden;
+      pointer-events: none;
     }
 
-    55% {
-      opacity: 1;
-      transform: scale(1.06);
-      filter: drop-shadow(0 0 30px rgba(255, 215, 0, .55));
-    }
-
-    75% {
-      transform: scale(.98);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
-      filter: drop-shadow(0 0 18px rgba(255, 215, 0, .35));
-    }
-  }
-
-  @media (max-width: 768px) {
     #logoIntroImg {
-      width: 170px;
+      width: 240px;
+      max-width: 60vw;
+      opacity: 0;
+      transform: scale(.85);
+      filter: drop-shadow(0 0 25px rgba(255, 215, 0, .35));
+      animation: logoPop 1.4s cubic-bezier(.2, .8, .2, 1) forwards;
     }
-  }
-    #siteLogo {
-    
-    position: fixed;
-    top: 50px;
-    right: 30px;
-    width: 100px;
-    z-index: 9998;
-    pointer-events: none;
-    padding: 10px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.45);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-  
 
-  }
+    @keyframes logoPop {
+      0% {
+        opacity: 0;
+        transform: scale(.8);
+        filter: drop-shadow(0 0 0 rgba(255, 215, 0, 0));
+      }
 
-  @media (max-width: 768px) {
-    #siteLogo {
-      top: 12px;
-      right: 12px;
-      width: 60px;
+      55% {
+        opacity: 1;
+        transform: scale(1.06);
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, .55));
+      }
+
+      75% {
+        transform: scale(.98);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 18px rgba(255, 215, 0, .35));
+      }
     }
-  }
+
+    @media (max-width: 768px) {
+      #logoIntroImg {
+        width: 170px;
+      }
+    }
+
+    #siteLogo {
+
+      position: fixed;
+      top: 50px;
+      right: 30px;
+      width: 100px;
+      z-index: 9998;
+      pointer-events: none;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+
+
+    }
+
+    @media (max-width: 768px) {
+      #siteLogo {
+        top: 12px;
+        right: 12px;
+        width: 60px;
+      }
+    }
+
+    .closePopup {
+
+      position: absolute;
+
+      top: 15px;
+
+      right: 20px;
+
+      background: none !important;
+
+      border: none !important;
+
+      outline: none;
+
+      box-shadow: none;
+
+      padding: 0;
+
+      margin: 0;
+
+      width: auto;
+
+      height: auto;
+
+      font-size: 34px;
+
+      font-weight: 700;
+
+      color: #111;
+
+      cursor: pointer;
+
+      line-height: 1;
+
+      z-index: 999;
+
+      transition: .2s ease;
+
+    }
+
+    .closePopup:hover {
+
+      color: #e53935;
+
+      transform: scale(1.15);
+
+    }
+
+    .card {
+
+      position: relative;
+
+    }
+
+    .citySuggestions {
+
+      position: absolute;
+
+      width: 100%;
+
+      background: #fff;
+
+      border: 1px solid #ddd;
+
+      border-top: none;
+
+      border-radius: 0 0 10px 10px;
+
+      max-height: 220px;
+
+      overflow-y: auto;
+
+      display: none;
+
+      z-index: 999;
+
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+
+    }
+
+    .city-item {
+
+      padding: 12px 15px;
+
+      cursor: pointer;
+
+      transition: .2s;
+
+    }
+
+    .city-item:hover {
+
+      background: #2563eb;
+
+      color: white;
+
+    }
+
+    .holdActions {
+
+      display: flex;
+
+      justify-content: center;
+
+      gap: 15px;
+
+      margin-top: 20px;
+
+    }
+
+    .secondaryBtn {
+
+      background: #f3f4f6;
+
+      color: #111;
+
+      border: none;
+
+      padding: 12px 25px;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+    }
+
+    .primaryBtn {
+
+      background: #2563eb;
+
+      color: #fff;
+
+      border: none;
+
+      padding: 12px 25px;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+    }
   </style>
- 
+
 
 </head>
 
@@ -546,16 +690,16 @@
 
   <header>
 
-  
+
 
     <div id="legend"></div>
 
   </header>
 
   <img id="siteLogo" src="images/logo.png" alt="Apple's Height Logo">
-<div id="logoIntro">
-  <img id="logoIntroImg" src="images/AH-logo.png" alt="Apple's Height">
-</div>
+  <div id="logoIntro">
+    <img id="logoIntroImg" src="images/AH-logo.png" alt="Apple's Height">
+  </div>
   <div id="reraBadge">
     <div class="rera-label">RERA NUMBER</div>
     <div>PBRERA-LDH45-PC0350</div>
@@ -675,14 +819,19 @@
       <h2>Visitor Registration</h2>
 
       <form id="visitorForm">
+        <button type="button" id="closePopup" class="closePopup" aria-label="Close">
+          &times;
+        </button>
 
         <input id="name" type="text" placeholder="Full Name" required>
 
-        <input type="tel" id="phone" maxlength="10" pattern="[0-9]{10}" placeholder="Phone Number" inputmode="numeric" required>
+        <input type="tel" id="phone" maxlength="10" pattern="[0-9]{10}" placeholder="Phone Number" inputmode="numeric"
+          required>
 
         <input id="email" type="email" placeholder="Email Address" required>
 
-        <input type="text" id="city" placeholder="Enter City" required>
+        <input id="city" type="text" placeholder="Enter City">
+        <div id="citySuggestions" class="citySuggestions"></div>
 
         <button type="submit">
 
@@ -747,7 +896,9 @@
     </div>
 
   </div>
+  <!-- HOLD PROPERTY -->
 
+  
   <!-- EXPIRED -->
 
   <div id="expiredScreen" class="overlay">
@@ -756,19 +907,17 @@
 
       <h2>Session Expired</h2>
 
-      <p>
-
-        Your access time has ended.
-
-      </p>
+      <p>Your access time has ended.</p>
 
       <br>
 
-      <p>
+      <p>Please register again to request access.</p>
 
-        Please contact the administrator if you need access again.
+      <br>
 
-      </p>
+      <button id="reRegisterBtn" class="primaryBtn">
+        Register Again
+      </button>
 
     </div>
 
@@ -810,24 +959,24 @@
     })();
   </script>
   <script>
-  (function () {
-    var intro = document.getElementById('logoIntro');
-    if (!intro) return;
+    (function () {
+      var intro = document.getElementById('logoIntro');
+      if (!intro) return;
 
-    // Total time logo stays on screen before fading out (ms)
-    var HOLD_TIME = 2200;
+      // Total time logo stays on screen before fading out (ms)
+      var HOLD_TIME = 2200;
 
-    window.addEventListener('load', function () {
-      setTimeout(function () {
-        intro.classList.add('hide');
-        // remove from DOM after the fade-out transition finishes
+      window.addEventListener('load', function () {
         setTimeout(function () {
-          intro.remove();
-        }, 700);
-      }, HOLD_TIME);
-    });
-  })();
-</script>
+          intro.classList.add('hide');
+          // remove from DOM after the fade-out transition finishes
+          setTimeout(function () {
+            intro.remove();
+          }, 700);
+        }, HOLD_TIME);
+      });
+    })();
+  </script>
 
   <script type="module" src="js/database.js"></script>
   <script type="module" src="js/property.js"></script>

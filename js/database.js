@@ -24,7 +24,58 @@ import {
 const VISITOR_COLLECTION = "visitors";
 const PROPERTY_COLLECTION = "properties";
 const CATEGORY_COLLECTION = "categories";
+const PROPERTY_REQUEST_COLLECTION = "propertyRequests";
 
+
+
+
+// =======================================
+// Property Requests
+// =======================================
+
+export async function addPropertyRequest(request) {
+
+    await addDoc(
+
+        collection(db, PROPERTY_REQUEST_COLLECTION),
+
+        request
+
+    );
+
+}
+
+export async function getPropertyRequests() {
+
+    const snapshot = await getDocs(
+        collection(db, PROPERTY_REQUEST_COLLECTION)
+    );
+
+    const requests = [];
+
+    snapshot.forEach(doc => {
+
+        requests.push({
+
+            docId: doc.id,
+
+            ...doc.data()
+
+        });
+
+    });
+
+    return requests;
+
+}
+
+export async function deletePropertyRequest(docId) {
+
+    await deleteDoc(
+        doc(db, PROPERTY_REQUEST_COLLECTION, docId)
+    );
+
+}
 // ==========================================
 // Default Data
 // ==========================================
@@ -282,7 +333,7 @@ export async function getProperties() {
 
     snapshot.forEach((document) => {
 
-        properties[document.id] = document.data().status;
+        properties[document.id] = document.data();
 
     });
 
@@ -290,21 +341,24 @@ export async function getProperties() {
 
 }
 
-export async function updateProperty(id, status) {
-
-    console.log("Updating:", id, status);
+export async function updateProperty(
+    id,
+    status,
+    buyerName = "",
+    buyerPhone = ""
+) {
 
     await setDoc(
         doc(db, PROPERTY_COLLECTION, id),
         {
-            status
+            status,
+            buyerName,
+            buyerPhone
         },
         {
             merge: true
         }
     );
-
-    console.log("Updated successfully");
 
 }
 
@@ -419,7 +473,7 @@ export function listenProperties(callback) {
             const properties = {};
 
             snapshot.forEach((document) => {
-                properties[document.id] = document.data().status;
+                properties[document.id] = document.data();
             });
 
             callback(properties);

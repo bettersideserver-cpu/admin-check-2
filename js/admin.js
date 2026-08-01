@@ -5,11 +5,24 @@ import {
     deleteVisitor,
     getProperties,
     checkExpiredVisitors,
-    initializeDatabase
+    initializeDatabase,
+    getPropertyRequests,
+    deletePropertyRequest
 } from "./database.js";
-import { loadProperties } from "./property.js";
+import {
+    loadProperties
+} from "./property.js";
 
-const requestContainer = document.getElementById("requestContainer");
+
+const propertyDetails = {};
+
+const requestContainers = [
+
+    document.getElementById("requestContainer"),
+
+    document.getElementById("visitorRequestPageContainer")
+
+];
 
 const pendingCount = document.getElementById("pendingCount");
 const approvedCount = document.getElementById("approvedCount");
@@ -46,7 +59,11 @@ async function updateCards() {
 
 async function loadVisitors() {
 
-    requestContainer.innerHTML = "";
+    requestContainers.forEach(c => {
+
+        if (c) c.innerHTML = "";
+
+    });
 
     const visitors = await getVisitors();
 
@@ -144,7 +161,15 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
             };
 
         }
-        requestContainer.appendChild(card);
+        requestContainers.forEach(c => {
+
+            if (c) {
+
+                c.appendChild(card.cloneNode(true));
+
+            }
+
+        });
 
     });
 
@@ -160,6 +185,8 @@ async function refresh() {
     await loadVisitors();
 
     await loadProperties();
+
+    await loadPropertyRequests();
 
 }
 
@@ -179,3 +206,61 @@ setInterval(async () => {
     await updateCards();
 
 }, 5000);
+
+async function loadPropertyRequests() {
+
+    const table =
+        document.getElementById("propertyRequestTable");
+
+    table.innerHTML = "";
+
+    const requests =
+        await getPropertyRequests();
+
+    requests.forEach(request => {
+
+        table.innerHTML += `
+
+<tr>
+
+<td>${request.visitorName}</td>
+
+<td>${request.phone}</td>
+
+<td>F${request.floor}</td>
+
+<td>${request.property}</td>
+
+<td>${request.unit}</td>
+
+<td>${new Date(request.requestedAt).toLocaleString()}</td>
+
+<td>
+
+<button
+class="reject"
+onclick="deleteRequest('${request.docId}')">
+
+Remove
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+    });
+
+}
+window.deleteRequest = async function (id) {
+
+    if (!confirm("Remove Request?"))
+        return;
+
+    await deletePropertyRequest(id);
+
+    loadPropertyRequests();
+
+}

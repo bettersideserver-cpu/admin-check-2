@@ -9,7 +9,8 @@ import {
     getCategories,
     checkExpiredVisitors,
     initializeDatabase,
-    listenProperties
+    listenProperties,
+    addPropertyRequest
 } from "./database.js";
 
 import {
@@ -21,6 +22,7 @@ import {
 // ==========================
 
 const popup = document.getElementById("popup");
+const closePopup = document.getElementById("closePopup");
 const visitorForm = document.getElementById("visitorForm");
 
 const waiting = document.getElementById("waitingScreen");
@@ -31,11 +33,22 @@ const verifyPhone = document.getElementById("verifyPhone");
 
 const expired = document.getElementById("expiredScreen");
 
+const reRegisterBtn = document.getElementById("reRegisterBtn");
+
 const floor = document.getElementById("floorWrapper");
 
 const timer = document.getElementById("timer");
 
 const tooltip = document.getElementById("tooltip");
+
+const holdPopup = document.getElementById("holdPopup");
+const holdPropertyName = document.getElementById("holdPropertyName");
+
+const holdYes = document.getElementById("holdYes");
+const holdNo = document.getElementById("holdNo");
+
+let selectedUnit = null;
+let selectedInfo = null;
 
 const legend = document.getElementById("legend");
 
@@ -46,6 +59,53 @@ const legend = document.getElementById("legend");
 // every page, so every reference above may be
 // null depending on which page loaded it.
 // ==========================
+closePopup?.addEventListener("click", () => {
+
+    // Stop checking visitor status
+    stopPolling();
+
+    // Remove pending redirect
+    localStorage.removeItem("pendingFloorRedirect");
+
+    // Close every popup
+    hideAll();
+
+});
+const cities = [
+    "Amritsar",
+    "Barnala",
+    "Batala",
+    "Bathinda",
+    "Chandigarh",
+    "Faridkot",
+    "Fatehgarh Sahib",
+    "Fazilka",
+    "Ferozepur",
+    "Gurdaspur",
+    "Hoshiarpur",
+    "Jalandhar",
+    "Kapurthala",
+    "Khanna",
+    "Kharar",
+    "Kotkapura",
+    "Ludhiana",
+    "Malerkotla",
+    "Mansa",
+    "Moga",
+    "Mohali",
+    "Muktsar",
+    "Nabha",
+    "Nawanshahr",
+    "Pathankot",
+    "Patiala",
+    "Rajpura",
+    "Rupnagar",
+    "Samrala",
+    "Sangrur",
+    "Sirhind",
+    "Sunam",
+    "Zirakpur"
+];
 
 let timerInterval;
 let pollInterval = null;
@@ -64,7 +124,7 @@ document.querySelectorAll(".unit").forEach(unit => {
         tooltip.style.left = e.pageX + 15 + "px";
         tooltip.style.top = e.pageY + 15 + "px";
 
-        const status = properties[unit.id] || "Unknown";
+        const status = properties[unit.id]?.status || "Unknown";
         const info = window.unitDetails?.[unit.id];
 
         const categories = await getCategories();
@@ -81,13 +141,21 @@ document.querySelectorAll(".unit").forEach(unit => {
     ` : ""}
 
     <br>
-Status :
-<span style="
-    color:${statusColor};
-    font-weight:700;
-">
-    ${status}
-</span>
+
+    Status :
+    <span style="
+        color:${statusColor};
+        font-weight:700;
+    ">
+        ${status}
+    </span>
+
+    <br><br>
+
+    ${status === "Available"
+                ? `<button class="holdBtn">Request to Hold</button>`
+                : ""
+            }
 `;
     });
 
@@ -96,8 +164,76 @@ Status :
         tooltip.style.display = "none";
 
     });
+    unit.addEventListener("click", () => {
+
+        if (properties[unit.id]?.status !== "Available") {
+
+            alert("This property is not available.");
+
+            return;
+
+        }
+
+        selectedUnit = unit.id;
+        selectedInfo = window.unitDetails?.[unit.id];
+
+        holdPropertyName.textContent =
+            selectedInfo?.unit || unit.id;
+
+        holdPopup.style.display = "flex";
+
+    });
 
 });
+
+const holdBtn = tooltip.querySelector(".holdBtn");
+
+if (holdBtn) {
+
+    holdBtn.onclick = async () => {
+
+        const visitorId = localStorage.getItem("currentVisitor");
+
+        if (!visitorId) {
+
+            alert("Please register first.");
+
+            return;
+
+        }
+
+        const visitor = await getVisitor(visitorId);
+
+        if (!visitor) {
+
+            alert("Visitor not found.");
+
+            return;
+
+        }
+
+        await addPropertyRequest({
+
+            visitorId: visitor.id,
+            visitorName: visitor.name,
+            phone: visitor.phone,
+            email: visitor.email,
+            city: visitor.city,
+
+            propertyId: unit.id,
+
+            floor: info?.floor || "",
+            property: info?.unit || "",
+
+            requestedAt: Date.now()
+
+        });
+
+        alert("Property request submitted successfully.");
+
+    };
+
+}
 
 // ==========================
 // Hide only the modal / overlay screens.
@@ -237,12 +373,13 @@ async function checkFlowStatus(targetUrl) {
 
             stopPolling();
 
-            alert("Request Rejected");
-
             localStorage.removeItem("currentVisitor");
             localStorage.removeItem("verified");
+            localStorage.removeItem("pendingFloorRedirect");
 
             hideAll();
+
+            alert("Your request has been rejected.");
 
             popup.style.display = "flex";
 
@@ -405,24 +542,24 @@ function startTimer(visitor) {
             hideAll();
 
             if (expired) {
-
                 expired.style.display = "flex";
-
             }
 
             return;
-
         }
 
-        const m = Math.floor(left / 60000);
-        const s = Math.floor((left % 60000) / 1000);
+        const totalSeconds = Math.floor(left / 1000);
+
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
 
         if (timer) {
-
-            timer.textContent = `${m}:${String(s).padStart(2, "0")}`;
-
+            timer.textContent =
+                `${String(h).padStart(2, "0")}:` +
+                `${String(m).padStart(2, "0")}:` +
+                `${String(s).padStart(2, "0")}`;
         }
-
     }
 
     // Show immediately
@@ -729,5 +866,131 @@ listenProperties((data) => {
     properties = data;
 
     updateFloorColors(properties);
+
+});
+
+reRegisterBtn?.addEventListener("click", () => {
+
+    localStorage.removeItem("currentVisitor");
+    localStorage.removeItem("verified");
+
+    hideAll();
+
+    popup.style.display = "flex";
+
+});
+
+
+const citySuggestions = document.getElementById("citySuggestions");
+
+if (cityInput && citySuggestions) {
+
+    cityInput.addEventListener("input", () => {
+
+        const value = cityInput.value.toLowerCase().trim();
+
+        citySuggestions.innerHTML = "";
+
+        if (!value) {
+
+            citySuggestions.style.display = "none";
+            return;
+
+        }
+
+        const filtered = cities.filter(city =>
+            city.toLowerCase().includes(value)
+        );
+
+        filtered.forEach(city => {
+
+            const div = document.createElement("div");
+
+            div.className = "city-item";
+
+            div.textContent = "📍 " + city;
+
+            div.onclick = () => {
+
+                cityInput.value = city;
+
+                citySuggestions.style.display = "none";
+
+            };
+
+            citySuggestions.appendChild(div);
+
+        });
+
+        citySuggestions.style.display =
+            filtered.length ? "block" : "none";
+
+    });
+
+    document.addEventListener("click", e => {
+
+        if (!citySuggestions.contains(e.target) &&
+            e.target !== cityInput) {
+
+            citySuggestions.style.display = "none";
+
+        }
+
+    });
+}
+holdNo?.addEventListener("click", () => {
+
+    holdPopup.style.display = "none";
+
+});
+
+holdYes?.addEventListener("click", async () => {
+
+    const visitorId = localStorage.getItem("currentVisitor");
+
+    if (!visitorId) {
+
+        alert("Please register first.");
+
+        holdPopup.style.display = "none";
+
+        return;
+
+    }
+
+    const visitor = await getVisitor(visitorId);
+
+    if (!visitor) {
+
+        alert("Visitor not found.");
+
+        holdPopup.style.display = "none";
+
+        return;
+
+    }
+
+    await addPropertyRequest({
+
+        visitorId: visitor.id,
+        visitorName: visitor.name,
+        phone: visitor.phone,
+        email: visitor.email,
+        city: visitor.city,
+
+        propertyId: selectedUnit,
+        property: selectedInfo?.unit || selectedUnit,
+        floor: selectedUnit.split("_")[0],
+        unit: selectedUnit.split("_").pop(),
+
+        status: "Pending",
+
+        requestedAt: Date.now()
+
+    });
+
+    holdPopup.style.display = "none";
+
+    alert("✅ Property request sent successfully.");
 
 });
