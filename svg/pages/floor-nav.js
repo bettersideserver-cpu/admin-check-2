@@ -9,7 +9,9 @@
 (function () {
 
     const FLOORS = [
-        { name: "Lower Ground", path: "Lower-Ground/lower-ground.html" },
+        { name: "Lower Ground", path: "Lower-Ground/Lower-Ground.html" },
+        { name: "Ground", path: "Upper-Ground/Upper-Ground.html" },
+
         { name: "Floor 1", path: "floor_1/floor_1.html" },
         { name: "Floor 2", path: "floor_2/floor_2.html" },
         { name: "Floor 3", path: "floor_3/floor_3.html" },
@@ -25,10 +27,9 @@
         { name: "Floor 13", path: "floor_13/floor_13.html" },
         { name: "Floor 14", path: "floor_14/floor_14.html" },
         { name: "Floor 15", path: "floor_15/floor_15.html" },
-        { name: "Floor 16", path: "floor_16/floor_16.html" },
-        { name: "Floor 17", path: "floor_17/floor_17.html" },
-        { name: "Floor 18", path: "floor_18/floor_18.html" }
+        { name: "Floor 16", path: "floor_16/floor_16.html" }
     ];
+
 
     function getCurrentIndex() {
 
@@ -82,12 +83,24 @@
         const isBottom = currentIndex === 0;
 
         nav.innerHTML = `
-            <button id="floorUpBtn" title="Go Up" ${isTop ? "disabled" : ""}>&#9650;</button>
-            <div id="floorNavLabel">${FLOORS[currentIndex].name}</div>
-            <button id="floorDownBtn" title="Go Down" ${isBottom ? "disabled" : ""}>&#9660;</button>
-        `;
+    <button id="floorUpBtn" title="Go Up" ${isTop ? "disabled" : ""}>&#9650;</button>
+
+    <select id="floorSelect">
+        ${FLOORS.map((floor, i) => `
+            <option value="${i}" ${i === currentIndex ? "selected" : ""}>
+                ${floor.name}
+            </option>
+        `).join("")}
+    </select>
+
+    <button id="floorDownBtn" title="Go Down" ${isBottom ? "disabled" : ""}>&#9660;</button>
+`;
 
         document.body.appendChild(nav);
+
+        document.getElementById("floorSelect").addEventListener("change", (e) => {
+            goToFloor(parseInt(e.target.value, 10));
+        });
 
         document.getElementById("floorUpBtn").addEventListener("click", () => {
             goToFloor(currentIndex + 1);

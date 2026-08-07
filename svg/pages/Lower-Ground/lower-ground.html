@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lower-Ground</title>
-<link rel="stylesheet" href="../styles.css">
-    
+    <title>Lower Ground</title>
 
+
+    <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
@@ -34,6 +34,20 @@
             background: #111;
             font-family: Arial, Helvetica, sans-serif;
         }
+
+        .unit {
+            fill: transparent;
+            stroke: transparent;
+            cursor: pointer;
+            pointer-events: all;
+            transition: .2s;
+        }
+
+        .unit:hover {
+            fill: rgba(37, 99, 235, .35);
+        }
+
+
 
         /* =====================================
    CONTAINER
@@ -150,21 +164,9 @@
             font-weight: 600;
 
         }
-
-        .unit {
-            fill: transparent;
-            stroke: transparent;
-            cursor: pointer;
-            pointer-events: all;
-            transition: .2s;
-        }
-
-        .unit:hover {
-            fill: rgba(37, 99, 235, .35);
-        }
     </style>
-    
-   <header>
+
+    <header>
         <h1>Interactive Floor Plan</h1>
         <div id="legend"></div>
     </header>
@@ -175,25 +177,70 @@
     <div class="floor-container">
 
         <!-- Floor Plan Image -->
-        <img src="Lower-Ground.png" id="floorImage" alt="Floor Plan">
+        <img src="Floor-Lower-Ground.png" id="floorImage" alt="Floor Plan">
 
         <!-- SVG Overlay -->
         <svg id="floorSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4967 2341"
             preserveAspectRatio="xMidYMid meet">
-            <path id="Lower-Ground_Resturanet_Bar_1" class="unit" d="M684.67 1182.78v525.78h1128v-528.89z" />
 
-            <path id="Lower-Ground_Resturanet_Bar_2" class="unit" d="M2612.33 1170.5h428.11v542.28h-428.11z" />
+            <!-- <path id="UpperGround_AnchorStore" d="M857.89 1076.11v462h995.33v-402.66h-460.66v-45.34h-212v-14z"
+                class="st0" />
+            <path id="UpperGround_RetailArea_01" class="unit" d="M2519.89 1178.78v304.67h259.33v-354h-64.66v48z"
+                class="st0" />
+            <path id="UpperGround_RetailArea_02" class="unit" d="M2786.56 1129.45h214.67v354h-214.67z" class="st0" />
+            <path id="UpperGround_RetailArea_03" class="unit" d="M3007.89 1129.45h218v354h-218z" class="st0" />
+            <path id="UpperGround_RetailArea_04" class="unit"
+                d="M3232.56 1129.45v354h310.67v-411.34h-70.67V936.78h-515.33v94.67h40.67v57.33h103.33v40.67s130.33 1 131.33 0"
+                class="st0" /> -->
 
-            <path id="Lower-Ground_Resturanet_Bar_3" class="unit"
-                d="M3709.44 1146.11v566.67h-669V1170.5h554c40.36.27 78.4-9.1 115-24.39" />
-
-
-
+            <path id="LowerGround_Restaurent_01" class="unit" d="M1014.44 1161.89v288.67h874.67v-288.67z" class="st0" />
+            <path id="LowerGround_Restaurent_02" class="unit"
+                d="M2527.78 1163.22v288.67h332.67v-288.67s-333.67-1-332.67 0" class="st0" />
+            <path id="LowerGround_Restaurent_03" class="unit"
+                d="M2871.11 1162.78v289.11h514v-296.67c-38.39 15.62-303.15 8.93-514 7.56" class="st0" />
         </svg>
 
     </div>
+    <script>
+        window.unitDetails = {
 
-     
+            "LowerGround_Restaurent_01": {
+                unit: "LowerGround Restaurent 01",
+                superArea: "7,226 sq.ft",
+                carpetArea: "3,613 sq.ft"
+            },
+
+            "LowerGround_Restaurent_02": {
+                unit: "LowerGround Restaurent 02",
+                superArea: "2,794 sq.ft",
+                carpetArea: "1,397 sq.ft"
+            },
+
+            "LowerGround_Restaurent_03": {
+                unit: "LowerGround Restaurent 03",
+                superArea: "4,278 sq.ft",
+                carpetArea: "2,239 sq.ft"
+            }
+
+        };
+    </script>
+
+    <div id="popupContainer"></div>
+
+    <script>
+        fetch("../hold.html")
+            .then(r => r.text())
+            .then(html => {
+
+                document.getElementById("popupContainer").innerHTML = html;
+
+            });
+    </script>
+
+    <script type="module" src="../../../js/database.js"></script>
+
+    <script type="module" src="../../../js/visitor.js"></script>
+
 
     <script src="../floor-nav.js"></script>
 </body>
