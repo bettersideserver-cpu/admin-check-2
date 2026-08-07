@@ -3,7 +3,6 @@
 // =============================
 
 const floorLinks = {
-
     floor1: "pages/floor_1/floor_1.html",
     floor2: "pages/floor_2/floor_2.html",
     floor3: "pages/floor_3/floor_3.html",
@@ -19,14 +18,7 @@ const floorLinks = {
     floor13: "pages/floor_13/floor_13.html",
     floor14: "pages/floor_14/floor_14.html",
     floor15: "pages/floor_15/floor_15.html",
-    floor16: "pages/floor_16/floor_16.html",
-    floor17: "pages/floor_17/floor_17.html",
-    floor18: "pages/floor_18/floor_18.html",
-
-    // Add more here
-    // floor6: "pages/floor6.html",
-    // floor7: "pages/floor7.html",
-
+    floor16: "pages/floor_16/floor_16.html"
 };
 
 // =============================

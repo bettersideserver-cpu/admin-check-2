@@ -19,9 +19,7 @@ const floorLinks = {
     floor13: "svg/pages/floor_13/floor_13.html",
     floor14: "svg/pages/floor_14/floor_14.html",
     floor15: "svg/pages/floor_15/floor_15.html",
-    floor16: "svg/pages/floor_16/floor_16.html",
-    floor17: "svg/pages/floor_17/floor_17.html",
-    floor18: "svg/pages/floor_18/floor_18.html",
+    floor16: "svg/pages/floor_16/floor_16.html"
 
     // Add more here
     // floor6: "pages/floor6.html",
@@ -51,9 +49,7 @@ const floorNames = {
     floor13: "Floor 13 — Penthouse Offices",
     floor14: "Floor 14 — Penthouse Offices",
     floor15: "Floor 15 — Penthouse Offices",
-    floor16: "Floor 16 — Presidential Offices",
-    floor17: "Floor 17 — Presidential Offices",
-    floor18: "Floor 18",
+    floor16: "Floor 16 — Presidential Offices"
 };
 
 const floorTooltip = document.getElementById("tooltip");
