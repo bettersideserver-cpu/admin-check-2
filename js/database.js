@@ -222,27 +222,16 @@ export async function getVisitor(id) {
 // Approve
 // =======================================
 
-export async function approveVisitor(id, minutes) {
+export async function approveVisitor(docId, minutes) {
 
-    const visitors = await getDocs(collection(db, VISITOR_COLLECTION));
-
-    for (const visitorDoc of visitors.docs) {
-
-        if (visitorDoc.data().id === id) {
-
-            await updateDoc(doc(db, VISITOR_COLLECTION, visitorDoc.id), {
-
-                status: "Approved",
-                accessTime: minutes,
-                expiresAt: Date.now() + minutes * 60 * 1000
-
-            });
-
-            break;
-
+    await updateDoc(
+        doc(db, VISITOR_COLLECTION, docId),
+        {
+            status: "Approved",
+            accessTime: minutes,
+            expiresAt: Date.now() + minutes * 60 * 1000
         }
-
-    }
+    );
 
 }
 
@@ -250,25 +239,14 @@ export async function approveVisitor(id, minutes) {
 // Reject
 // =======================================
 
-export async function rejectVisitor(id) {
+export async function rejectVisitor(docId) {
 
-    const visitors = await getDocs(collection(db, VISITOR_COLLECTION));
-
-    for (const visitorDoc of visitors.docs) {
-
-        if (visitorDoc.data().id === id) {
-
-            await updateDoc(doc(db, VISITOR_COLLECTION, visitorDoc.id), {
-
-                status: "Rejected"
-
-            });
-
-            break;
-
+    await updateDoc(
+        doc(db, VISITOR_COLLECTION, docId),
+        {
+            status: "Rejected"
         }
-
-    }
+    );
 
 }
 
@@ -276,21 +254,11 @@ export async function rejectVisitor(id) {
 // Delete Visitor
 // =======================================
 
-export async function deleteVisitor(id) {
+export async function deleteVisitor(docId) {
 
-    const visitors = await getDocs(collection(db, VISITOR_COLLECTION));
-
-    for (const visitorDoc of visitors.docs) {
-
-        if (visitorDoc.data().id === id) {
-
-            await deleteDoc(doc(db, VISITOR_COLLECTION, visitorDoc.id));
-
-            break;
-
-        }
-
-    }
+    await deleteDoc(
+        doc(db, VISITOR_COLLECTION, docId)
+    );
 
 }
 

@@ -77,6 +77,7 @@ async function loadVisitors() {
     }
 
     visitors.forEach(visitor => {
+        // console.log("Visitor Object:", visitor);
 
         const card = document.createElement("div");
 
@@ -123,8 +124,11 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
         // Approve
         card.querySelector(".approve").onclick = async () => {
 
+            // console.log("docId:", visitor.docId);
+            // console.log("id:", visitor.id);
+
             await approveVisitor(
-                visitor.id,
+                visitor.docId,
                 // Dropdown values are hours (1 / 6 / 24),
                 // but approveVisitor expects minutes.
                 Number(select.value) * 60
@@ -137,7 +141,7 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
         // Reject
         card.querySelector(".reject").onclick = async () => {
 
-            await rejectVisitor(visitor.id);
+            await rejectVisitor(visitor.docId);
 
             await refresh();
 
@@ -152,7 +156,7 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
 
                 if (confirm("Delete this visitor?")) {
 
-                    await deleteVisitor(visitor.id);
+                    await deleteVisitor(visitor.docId);
 
                     await refresh();
 
@@ -162,13 +166,37 @@ ${visitor.status === "Expired" || visitor.status === "Rejected"
 
         }
         requestContainers.forEach(c => {
+            if (!c) return;
 
-            if (c) {
+            const clone = card.cloneNode(true);
 
-                c.appendChild(card.cloneNode(true));
+            const select = clone.querySelector("select");
 
+            clone.querySelector(".approve").onclick = async () => {
+                await approveVisitor(
+                    visitor.docId,
+                    Number(select.value) * 60
+                );
+                await refresh();
+            };
+
+            clone.querySelector(".reject").onclick = async () => {
+                await rejectVisitor(visitor.docId);
+                await refresh();
+            };
+
+            const deleteBtn = clone.querySelector(".delete");
+
+            if (deleteBtn) {
+                deleteBtn.onclick = async () => {
+                    if (confirm("Delete this visitor?")) {
+                        await deleteVisitor(visitor.docId);
+                        await refresh();
+                    }
+                };
             }
 
+            c.appendChild(clone);
         });
 
     });
@@ -202,10 +230,8 @@ async function refresh() {
 
 // Refresh dashboard counts only
 setInterval(async () => {
-
     await updateCards();
-
-}, 5000);
+}, 60000);
 
 async function loadPropertyRequests() {
 
