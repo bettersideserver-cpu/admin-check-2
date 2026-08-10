@@ -141,7 +141,21 @@
         /* =====================================
    OPTIONAL BACK BUTTON
 ===================================== */
-
+@media (max-width: 768px) and (orientation: portrait) {
+    #floorNav,
+    .floor-nav,
+    #floorSelector,
+    .floor-switcher {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 20px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        z-index: 200 !important;
+    }
+}
+  
         .back-btn {
 
             position: absolute;
