@@ -296,88 +296,47 @@
 
         }
 
-        /* Responsive */
+        /* Delete Button (was accidentally nested inside the media query) */
 
-        @media(max-width:900px) {
+        .delete {
 
-            body {
+            background: #ef4444;
 
-                flex-direction: column;
+            color: #fff;
 
-            }
+            border: none;
 
-            .sidebar {
+            padding: 10px 18px;
 
-                position: relative;
-                width: 100%;
-                height: auto;
+            border-radius: 8px;
 
-            }
+            cursor: pointer;
 
-            .main {
+            margin-left: 10px;
 
-                margin-left: 0;
-                width: 100%;
+            font-size: 14px;
 
-            }
+            font-weight: 600;
 
-            .cards {
-
-                grid-template-columns: 1fr;
-
-            }
-
-            .propertyTable {
-
-                display: block;
-                overflow: auto;
-
-            }
-
-            /* Delete Button */
-
-            .delete {
-
-                background: #ef4444;
-
-                color: #fff;
-
-                border: none;
-
-                padding: 10px 18px;
-
-                border-radius: 8px;
-
-                cursor: pointer;
-
-                margin-left: 10px;
-
-                font-size: 14px;
-
-                font-weight: 600;
-
-                transition: all .25s ease;
-
-            }
-
-            .delete:hover {
-
-                background: #dc2626;
-
-                transform: translateY(-2px);
-
-                box-shadow: 0 8px 18px rgba(239, 68, 68, .35);
-
-            }
-
-            .delete:active {
-
-                transform: scale(.96);
-
-            }
+            transition: all .25s ease;
 
         }
 
+        .delete:hover {
+
+            background: #dc2626;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 18px rgba(239, 68, 68, .35);
+
+        }
+
+        .delete:active {
+
+            transform: scale(.96);
+
+        }
         .searchBox {
 
             width: 280px;
@@ -671,15 +630,335 @@
         .page.active {
             display: block;
         }
+
+        /* ==========================================
+   MOBILE RESPONSIVE LAYER
+========================================== */
+
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* horizontal scroll shell for wide tables */
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-wrap .propertyTable {
+            min-width: 780px;
+        }
+
+        /* hamburger + sidebar overlay (hidden on desktop) */
+
+        .menuToggle {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 60;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 10px;
+            background: #1e293b;
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+        }
+
+        .sidebarOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .5);
+            z-index: 40;
+        }
+
+        .sidebarOverlay.show {
+            display: block;
+        }
+
+        /* ---------- Tablet / small laptop ---------- */
+
+        @media (max-width: 1100px) {
+
+            .floorStats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .buyer-fields {
+                flex-wrap: wrap;
+            }
+
+            .field {
+                flex: 1 1 180px;
+            }
+        }
+
+        /* ---------- Mobile & tablet: drawer sidebar ---------- */
+
+        @media (max-width: 900px) {
+
+            body {
+                display: block;
+            }
+
+            .menuToggle {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 78%;
+                max-width: 300px;
+                height: 100vh;
+                overflow-y: auto;
+                padding: 24px 18px;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                z-index: 50;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar h2 {
+                margin-bottom: 26px;
+                font-size: 20px;
+            }
+
+            .sidebar li {
+                padding: 14px 16px;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 74px 16px 40px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+                margin-bottom: 22px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            /* logout pinned to top-right corner on mobile */
+
+            .logout {
+                position: fixed;
+                top: 14px;
+                right: 14px;
+                z-index: 60;
+                width: auto;
+                height: 44px;
+                padding: 0 16px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 6px 16px rgba(239, 68, 68, .3);
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .card h3 {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+            .card h2 {
+                font-size: 26px;
+            }
+
+            .section {
+                padding: 18px 16px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .section-header h2 {
+                font-size: 20px;
+            }
+
+            .searchBox {
+                width: 100%;
+            }
+
+            .floorTabs {
+                gap: 8px;
+                margin: 16px 0;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 4px;
+            }
+
+            .floor {
+                flex: 0 0 auto;
+                padding: 9px 15px;
+                font-size: 14px;
+            }
+
+            .floorStats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat {
+                padding: 14px;
+            }
+
+            .stat h3 {
+                font-size: 22px;
+            }
+
+            /* stacked buyer form */
+
+            .buyer-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+
+            .buyer-fields {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .field {
+                flex: 1 1 auto;
+            }
+
+            .saveBuyer {
+                width: 100%;
+            }
+
+            /* request cards */
+
+            .request-card {
+                padding: 16px;
+            }
+
+            .request-card h3 {
+                font-size: 17px;
+            }
+
+            .timeSelect,
+            select,
+            #propertyTable select {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .approve,
+            .reject {
+                width: 100%;
+                margin: 0 0 10px 0;
+                padding: 12px 16px;
+            }
+
+            .delete {
+                width: 100%;
+                margin: 0 0 10px 0;
+            }
+
+            .propertyTable th,
+            .propertyTable td {
+                padding: 12px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .table-actions {
+                flex-direction: column-reverse;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+                padding: 13px 20px;
+            }
+        }
+
+        /* ---------- Small phones ---------- */
+
+        @media (max-width: 560px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .floorStats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .main {
+                padding: 70px 12px 32px;
+            }
+
+            .section {
+                padding: 16px 12px;
+            }
+        }
+
+        /* avoid iOS zoom-on-focus */
+
+        @media (max-width: 900px) {
+
+            input,
+            select,
+            textarea,
+            button {
+                font-size: 16px;
+            }
+        }
     </style>
 
 </head>
 
 <body>
 
+    <!-- Mobile menu toggle -->
+
+    <button class="menuToggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+
+    <div class="sidebarOverlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
 
         <h2>🏢 Admin Panel</h2>
 
@@ -856,6 +1135,7 @@
 
             </div>
 
+            <div class="table-wrap">
             <table class="propertyTable">
 
                 <thead>
@@ -878,6 +1158,7 @@
                 </tbody>
 
             </table>
+            </div>
             <div class="table-actions">
 
                 <button id="cancelChanges" class="cancel-btn">
@@ -900,6 +1181,7 @@
 
             </div>
 
+            <div class="table-wrap">
             <table class="propertyTable">
 
                 <thead>
@@ -923,6 +1205,7 @@
                 </tbody>
 
             </table>
+            </div>
 
         </section>
 
@@ -959,8 +1242,36 @@
 
                 }
 
+                closeSidebar();
+
             }
 
+        });
+
+        /* ---- mobile drawer ---- */
+
+        const sidebar = document.getElementById("sidebar");
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("open");
+            sidebarOverlay.classList.add("show");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("open");
+            sidebarOverlay.classList.remove("show");
+        }
+
+        menuToggle.addEventListener("click", () => {
+            sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+        });
+
+        sidebarOverlay.addEventListener("click", closeSidebar);
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 900) closeSidebar();
         });
 
     </script>
