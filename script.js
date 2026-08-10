@@ -4,6 +4,8 @@
 
 const floorLinks = {
 
+    lowerGround: "svg/pages/Lower-Ground/Lower-Ground.html",
+    ground: "svg/pages/Upper-Ground/Upper-Ground.html",
     floor1: "svg/pages/floor_1/floor_1.html",
     floor2: "svg/pages/floor_2/floor_2.html",
     floor3: "svg/pages/floor_3/floor_3.html",
@@ -34,21 +36,23 @@ const floorLinks = {
 // =============================
 
 const floorNames = {
-    floor1: "Floor 1 — Retail / Anchor",
-    floor2: "Floor 2 — Retail / Anchor",
-    floor3: "Floor 3 — Club",
-    floor4: "Floor 4 — Club",
-    floor5: "Floor 5 — Presidential Offices",
+    lowerGround: "Food & Beverages",
+    ground: "Retail Space & Anchor Store",
+    floor1: "Floor 1 — Retail Space & Anchor Store",
+    floor2: "Floor 2 — Anchor Store & Club House",
+    floor3: "Floor 3 — Business Convention Center & Wellness Center",
+    floor4: "Floor 4 — Presidential Offices",
+    floor5: "Floor 5 — Boutique Offices",
     floor6: "Floor 6 — Boutique Offices",
     floor7: "Floor 7 — Boutique Offices",
     floor8: "Floor 8 — Boutique Offices",
     floor9: "Floor 9 — Boutique Offices",
     floor10: "Floor 10 — Boutique Offices",
-    floor11: "Floor 11 — Boutique Offices",
-    floor12: "Floor 12 — Boutique Offices",
+    floor11: "Floor 11 — Presidential Offices",
+    floor12: "Floor 12 — Penthouse Offices",
     floor13: "Floor 13 — Penthouse Offices",
     floor14: "Floor 14 — Penthouse Offices",
-    floor15: "Floor 15 — Penthouse Offices",
+    floor15: "Floor 15 — Presidential Offices",
     floor16: "Floor 16 — Presidential Offices"
 };
 
