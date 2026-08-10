@@ -681,6 +681,203 @@
       cursor: pointer;
 
     }
+
+    /* ==========================================
+   MOBILE LANDSCAPE
+   Phone held sideways: short viewport, wide screen.
+   NOTE: a phone in landscape is ~844px wide, so the
+   (max-width:768px) rules above never match here —
+   the mobile behaviour is re-declared in this block.
+========================================== */
+
+    @media (orientation: landscape) and (max-height: 500px) {
+
+      /* reclaim vertical space */
+
+      header {
+        padding: 6px 14px;
+      }
+
+      header h1 {
+        margin-bottom: 0;
+        font-size: 15px;
+      }
+
+      #legend {
+        gap: 12px;
+        font-size: 11px;
+      }
+
+      #siteLogo {
+        top: 8px;
+        right: 8px;
+        width: 48px;
+        padding: 6px;
+      }
+
+      #logoIntroImg {
+        width: 130px;
+      }
+
+      #reraBadge {
+        top: 8px;
+        left: 8px;
+        padding: 5px 10px;
+        font-size: 9px;
+        line-height: 1.35;
+      }
+
+      #timer {
+        top: 8px;
+        right: 68px;
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      /* ---------- DAY / NIGHT SLIDER: VERTICAL, RIGHT SIDE ---------- */
+
+      #timeSliderWrap {
+        position: fixed;
+        left: auto;
+        right: 10px;
+        top: 62px;
+        bottom: 46px;
+        transform: none;
+        width: 46px;
+        height: auto;
+        padding: 14px 0;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 42;
+      }
+
+      #timeSlider {
+        writing-mode: vertical-lr;
+        -webkit-appearance: slider-vertical;
+        appearance: slider-vertical;
+        width: 22px;
+        height: 100%;
+        margin: 0;
+        accent-color: #FFD700;
+      }
+
+      /* ---------- CATEGORY PANELS: BOTTOM BAR ---------- */
+
+      #categoryPanels {
+        display: flex;
+        position: fixed;
+        left: 8px;
+        right: 66px;
+        bottom: 8px;
+        top: auto;
+        transform: none;
+        width: auto;
+        z-index: 41;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        padding: 0;
+      }
+
+      .category-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.1;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(168, 120, 42, 0.3);
+        border-radius: 12px;
+        color: #222;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 7px 4px;
+        cursor: pointer;
+        transition: background .2s ease, color .2s ease, border-color .2s ease;
+      }
+
+      .category-btn.active {
+        background: #FFD700;
+        border-color: #FFD700;
+        color: #222;
+      }
+
+      /* same as portrait mobile: shapes stay inert until a
+         category panel is tapped */
+
+      #buildingSVG path {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #buildingSVG path.panel-active {
+        opacity: 1;
+        pointer-events: auto;
+        fill: rgba(255, 215, 0, .35);
+        stroke: #FFD700;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 8px #FFD700);
+      }
+
+      #buildingSVG path.panel-active:active {
+        fill: rgba(255, 215, 0, .6);
+      }
+
+      /* popups have to fit a 390px-tall screen */
+
+      .card {
+        width: min(420px, 92vw);
+        max-height: 88vh;
+        overflow-y: auto;
+        padding: 18px 20px;
+      }
+
+      .card h2 {
+        margin-bottom: 12px;
+        font-size: 19px;
+      }
+
+      input {
+        margin-bottom: 10px;
+        padding: 9px 12px;
+      }
+
+      button {
+        padding: 11px;
+        font-size: 15px;
+      }
+
+      .closePopup {
+        top: 8px;
+        right: 14px;
+        font-size: 28px;
+      }
+
+      .citySuggestions {
+        max-height: 140px;
+      }
+    }
+
+    /* very short landscape (small phones, ~320px tall) */
+
+    @media (orientation: landscape) and (max-height: 380px) {
+
+      #timeSliderWrap {
+        top: 58px;
+        bottom: 40px;
+        width: 40px;
+      }
+
+      .category-btn {
+        font-size: 9px;
+        padding: 6px 3px;
+      }
+    }
   </style>
 
 
