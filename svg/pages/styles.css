@@ -42,6 +42,26 @@
         z-index: 9999;
     }
 
+    @media (pointer: coarse), (max-width: 768px) {
+        #tooltip {
+            pointer-events: auto;
+            max-width: min(320px, 82vw);
+        }
+
+        #tooltip .holdBtn {
+            display: inline-block;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 7px;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+    
+    }
+
 
 
     #timer {

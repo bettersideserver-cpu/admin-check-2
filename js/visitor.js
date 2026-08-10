@@ -115,61 +115,121 @@ let properties = await getProperties();
 updateFloorColors(properties);
 let categories = await getCategories();
 
+const isMobileUnitInteraction = () =>
+    window.matchMedia("(pointer: coarse), (max-width: 768px)").matches;
+
+function getHoldElements() {
+    return {
+        popup: document.getElementById("holdPopup"),
+        propertyName: document.getElementById("holdPropertyName")
+    };
+}
+
+function showUnitTooltip(unit, event) {
+
+    if (!tooltip) return;
+
+    const status = properties[unit.id]?.status || "Unknown";
+    const info = window.unitDetails?.[unit.id];
+
+    // Keep the tooltip inside the phone viewport.
+    const x = Math.min(
+        (event.clientX || window.innerWidth / 2) + 12,
+        window.innerWidth - Math.min(300, window.innerWidth * 0.8) - 10
+    );
+
+    const y = Math.min(
+        (event.clientY || window.innerHeight / 2) + 12,
+        window.innerHeight - 170
+    );
+
+    tooltip.style.display = "block";
+    tooltip.style.left = Math.max(10, x) + "px";
+    tooltip.style.top = Math.max(10, y) + "px";
+
+    // On touch devices the tooltip itself must be clickable.
+    tooltip.style.pointerEvents = isMobileUnitInteraction() ? "auto" : "none";
+
+    const categoriesNow = categories || {};
+    const statusColor = categoriesNow[status] || "#999";
+
+    tooltip.innerHTML = `
+        <strong>${unit.id.replace(/_x5F_/g, " ").replace(/_/g, " ")}</strong>
+
+        ${info ? `
+            <br>
+            Super Area : ${info.superArea}
+            <br>
+            Carpet Area : ${info.carpetArea}
+        ` : ""}
+
+        <br>
+        Status :
+        <span style="color:${statusColor};font-weight:700;">
+            ${status}
+        </span>
+
+        ${status === "Available" ? `
+            <br><br>
+            <button type="button" class="holdBtn">Request to Hold</button>
+        ` : ""}
+    `;
+
+    // IMPORTANT: the button is created dynamically, so its listener
+    // must be attached after innerHTML is assigned.
+    const holdBtn = tooltip.querySelector(".holdBtn");
+
+    if (holdBtn) {
+        holdBtn.addEventListener("click", async (e) => {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            selectedUnit = unit.id;
+            selectedInfo = window.unitDetails?.[unit.id];
+
+            const hold = getHoldElements();
+
+            if (!hold.popup) {
+                alert("Hold request is still loading. Please try again.");
+                return;
+            }
+
+            if (hold.propertyName) {
+                hold.propertyName.textContent =
+                    selectedInfo?.unit || unit.id;
+            }
+
+            tooltip.style.display = "none";
+            hold.popup.style.display = "flex";
+        });
+    }
+}
+
 document.querySelectorAll(".unit").forEach(unit => {
 
-    unit.addEventListener("mousemove", async (e) => {
+    unit.addEventListener("mousemove", (e) => {
 
-        tooltip.style.display = "block";
+        // Desktop: normal hover tooltip.
+        if (!isMobileUnitInteraction()) {
+            showUnitTooltip(unit, e);
+        }
 
-        tooltip.style.left = e.pageX + 15 + "px";
-        tooltip.style.top = e.pageY + 15 + "px";
-
-        const status = properties[unit.id]?.status || "Unknown";
-        const info = window.unitDetails?.[unit.id];
-
-        const categories = await getCategories();
-        const statusColor = categories[status] || "#999";
-
-        tooltip.innerHTML = `
-    <strong>${unit.id.replace(/_x5F_/g, " ").replace(/_/g, " ")}</strong>
-
-    ${info ? `
-        <br>
-        Super Area : ${info.superArea}
-        <br>
-        Carpet Area : ${info.carpetArea}
-    ` : ""}
-
-    <br>
-
-    Status :
-    <span style="
-        color:${statusColor};
-        font-weight:700;
-    ">
-        ${status}
-    </span>
-
-    <br><br>
-
-    ${status === "Available"
-                ? `<button class="holdBtn">Request to Hold</button>`
-                : ""
-            }
-`;
     });
 
     unit.addEventListener("mouseleave", () => {
 
-        tooltip.style.display = "none";
+        if (!isMobileUnitInteraction() && tooltip) {
+            tooltip.style.display = "none";
+        }
 
     });
-    unit.addEventListener("click", () => {
+
+    unit.addEventListener("click", (e) => {
 
         if (properties[unit.id]?.status !== "Available") {
 
             alert("This property is not available.");
-
             return;
 
         }
@@ -177,63 +237,51 @@ document.querySelectorAll(".unit").forEach(unit => {
         selectedUnit = unit.id;
         selectedInfo = window.unitDetails?.[unit.id];
 
-        holdPropertyName.textContent =
-            selectedInfo?.unit || unit.id;
+        // MOBILE:
+        // First tap = show the tooltip.
+        // The user then taps "Request to Hold" INSIDE the tooltip.
+        // Do not open the Yes/No overlay from the SVG tap itself.
+        if (isMobileUnitInteraction()) {
 
-        holdPopup.style.display = "flex";
+            showUnitTooltip(unit, e);
+            return;
+
+        }
+
+        // DESKTOP:
+        // Preserve the existing click -> Yes/No hold confirmation.
+        const hold = getHoldElements();
+
+        if (!hold.popup) {
+            alert("Hold request is still loading. Please try again.");
+            return;
+        }
+
+        if (hold.propertyName) {
+            hold.propertyName.textContent =
+                selectedInfo?.unit || unit.id;
+        }
+
+        hold.popup.style.display = "flex";
 
     });
 
 });
 
-const holdBtn = tooltip.querySelector(".holdBtn");
+// Tap outside the mobile tooltip to close it.
+document.addEventListener("click", (e) => {
 
-if (holdBtn) {
+    if (!isMobileUnitInteraction() || !tooltip) return;
 
-    holdBtn.onclick = async () => {
+    if (
+        tooltip.style.display === "block" &&
+        !tooltip.contains(e.target) &&
+        !e.target.closest(".unit")
+    ) {
+        tooltip.style.display = "none";
+    }
 
-        const visitorId = localStorage.getItem("currentVisitor");
-
-        if (!visitorId) {
-
-            alert("Please register first.");
-
-            return;
-
-        }
-
-        const visitor = await getVisitor(visitorId);
-
-        if (!visitor) {
-
-            alert("Visitor not found.");
-
-            return;
-
-        }
-
-        await addPropertyRequest({
-
-            visitorId: visitor.id,
-            visitorName: visitor.name,
-            phone: visitor.phone,
-            email: visitor.email,
-            city: visitor.city,
-
-            propertyId: unit.id,
-
-            floor: info?.floor || "",
-            property: info?.unit || "",
-
-            requestedAt: Date.now()
-
-        });
-
-        alert("Property request submitted successfully.");
-
-    };
-
-}
+});
 
 // ==========================
 // Hide only the modal / overlay screens.
@@ -938,13 +986,21 @@ if (cityInput && citySuggestions) {
 
     });
 }
-holdNo?.addEventListener("click", () => {
+document.addEventListener("click", async (e) => {
 
-    holdPopup.style.display = "none";
+    const holdNo = e.target.closest("#holdNo");
+    const holdYes = e.target.closest("#holdYes");
 
-});
+    if (!holdNo && !holdYes) return;
 
-holdYes?.addEventListener("click", async () => {
+    const holdPopup = document.getElementById("holdPopup");
+
+    if (holdNo) {
+        if (holdPopup) holdPopup.style.display = "none";
+        return;
+    }
+
+    if (!holdYes) return;
 
     const visitorId = localStorage.getItem("currentVisitor");
 
@@ -952,10 +1008,9 @@ holdYes?.addEventListener("click", async () => {
 
         alert("Please register first.");
 
-        holdPopup.style.display = "none";
+        if (holdPopup) holdPopup.style.display = "none";
 
         return;
-
     }
 
     const visitor = await getVisitor(visitorId);
@@ -964,10 +1019,9 @@ holdYes?.addEventListener("click", async () => {
 
         alert("Visitor not found.");
 
-        holdPopup.style.display = "none";
+        if (holdPopup) holdPopup.style.display = "none";
 
         return;
-
     }
 
     await addPropertyRequest({
@@ -989,7 +1043,7 @@ holdYes?.addEventListener("click", async () => {
 
     });
 
-    holdPopup.style.display = "none";
+    if (holdPopup) holdPopup.style.display = "none";
 
     alert("✅ Property request sent successfully.");
 

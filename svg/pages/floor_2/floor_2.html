@@ -489,7 +489,52 @@
                 zoom: .7;
             }
         }
+/* ==========================================
+   PORTRAIT MOBILE - CENTER FLOOR IMAGE
+========================================== */
 
+@media screen and (max-width: 768px) and (orientation: portrait) {
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .floor-container {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        overflow: hidden !important;
+    }
+
+    #floorImage,
+    #floorSVG {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    #floorImage {
+        object-fit: contain !important;
+        object-position: center center !important;
+    }
+
+    #floorSVG {
+        z-index: 10;
+    }
+
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 120;
+    }
+}
     </style>
 
     <header>
