@@ -37,7 +37,7 @@ const floorLinks = {
 
 const floorNames = {
     lowerGround: "Food & Beverages",
-    ground: "Retail Space & Anchor Store",
+    ground: "Ground Floor — Retail Space, Anchor Store & F&B",
     floor1: "Floor 1 — Retail Space & Anchor Store",
     floor2: "Floor 2 — Anchor Store & Club House",
     floor3: "Floor 3 — Business Convention Center & Wellness Center",
